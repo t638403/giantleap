@@ -12,7 +12,7 @@ class Metronome extends Readable {
 	 */
 	constructor(bpm, ticksPerBeat, swing = 0) {
 		super({objectMode:true});
-		this.beatIndex = BigInt(0);
+		this.beatIndex = 0n;
 		const interval = (60000000000 / (ticksPerBeat * bpm));
 		this.interval = BigInt( Math.round(interval) );
 		this.swing    = BigInt( Math.round( swing * interval ) );
