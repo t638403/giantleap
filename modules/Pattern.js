@@ -12,18 +12,14 @@ class Pattern extends Transform {
 			patStr = patStr.join('');
 		}
 		this.prevTick = null;
-		this.prevPartialMidiMsg = null;
+		this.noteOn = null;
 		this.pattern = RingBuffer(patStr.split(''));
 	}
 
 	_transform(partialMidiMsg, encoding, done) {
+
 		const tick = this.pattern.next().value;
-
-		const noteOn = Object.assign({}, partialMidiMsg, {msg:'noteOn'});
-
-		// Note off basically means duplicating the previous msg while maintaining the current time, and setting the
-		// message to noteOff.
-		const noteOff = Object.assign({}, this.prevPartialMidiMsg, {msg:'noteOff', t: partialMidiMsg.t});
+		const hit = Object.assign({}, partialMidiMsg, {msg:'note'});
 
 		switch(tick) {
 			case 'x':
@@ -31,21 +27,23 @@ class Pattern extends Transform {
 					// There must be a tiny delay between noteOff and noteOn or machines start to expose undesirable
 					// behaviour, like hanging notes. 3ms seems to be long enough for our mighty machines to react, and
 					// it is short enough for us mighty humans to not notice.
-					noteOff.t = noteOff.t - BigInt(3);
-					this.push(noteOff);
-					this.push(noteOn);
+					this.noteOn.tEnd = hit.t - BigInt(3);
+					this.push(Object.assign({}, this.noteOn));
+					this.noteOn = hit;
 				} else {
-					this.push(noteOn);
+					this.noteOn = hit;
 				}
 				break;
 			case '.':
 				if(this.prevTick === '=' || this.prevTick === 'x') {
-					this.push(noteOff);
+					this.noteOn.tEnd = hit.t;
+					this.push(Object.assign({}, this.noteOn));
+					this.noteOn = null;
 				}
 				break;
 		}
 		this.prevTick = tick;
-		this.prevPartialMidiMsg = partialMidiMsg;
+		this.noteOn = hit;
 		done();
 	}
 
@@ -56,8 +54,8 @@ class Pattern extends Transform {
 	 * @private
 	 */
 	_flush(done) {
-		const noteOff = Object.assign({}, this.prevPartialMidiMsg, {msg:'noteOff', t:this.prevPartialMidiMsg.t + BigInt(1000000000)});
-		this.push(noteOff);
+		this.noteOn.tEnd = this.noteOn.t + BigInt(1000000000);
+		this.push(Object.assign({}, this.noteOn));
 	}
 
 }
