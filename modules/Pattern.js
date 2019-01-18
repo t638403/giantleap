@@ -53,9 +53,10 @@ class Pattern extends Transform {
 	 * @param done
 	 * @private
 	 */
-	_flush(done) {
+	_final(done) {
 		this.noteOn.tEnd = this.noteOn.t + 1000000000n;
 		this.push(Object.assign({}, this.noteOn));
+		done();
 	}
 
 }

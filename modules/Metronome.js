@@ -21,9 +21,10 @@ class Metronome extends Readable {
 		this.start;
 	}
 	_read() {
-		if(this.beatIndex >= 4) {
-			return this.push(null);
-		}
+		// End seqence after 200 notes
+		// if(this.beatIndex >= 200) {
+		// 	return this.push(null);
+		// }
 		if(!this.isSwingBeat) {
 			this.push( { t: (this.beatIndex * this.interval) });
 		} else {
