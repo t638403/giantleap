@@ -27,7 +27,7 @@ class Pattern extends Transform {
 					// There must be a tiny delay between noteOff and noteOn or machines start to expose undesirable
 					// behaviour, like hanging notes. 3ms seems to be long enough for our mighty machines to react, and
 					// it is short enough for us mighty humans to not notice.
-					this.noteOn.tEnd = hit.t - BigInt(3);
+					this.noteOn.tEnd = hit.t - BigInt(3000000);
 					this.push(Object.assign({}, this.noteOn));
 					this.noteOn = hit;
 				} else {
