@@ -12,6 +12,7 @@ class Pattern extends Transform {
 			patStr = patStr.join('');
 		}
 		this.prevTick = null;
+		this.prevPartialMidiMsg = null;
 		this.pattern = RingBuffer(patStr.split(''));
 	}
 
@@ -25,7 +26,7 @@ class Pattern extends Transform {
 					// There must be a tiny delay between noteOff and noteOn or machines start to expose undesirable
 					// behaviour. 3ms seems to be long enough for the machines to react, and it is short enough
 					// for us humans to notice.
-					this.push(Object.assign({}, partialMidiMsg, noteOff, {t:partialMidiMsg.t - BigInt(3)}));
+					this.push(Object.assign({}, this.prevPartialMidiMsg, noteOff, {t:partialMidiMsg.t - BigInt(3)}));
 
 					this.push(Object.assign({}, partialMidiMsg, noteOn));
 				} else {
@@ -34,11 +35,12 @@ class Pattern extends Transform {
 				break;
 			case '.':
 				if(this.prevTick === '=' || this.prevTick === 'x') {
-					this.push(Object.assign({}, partialMidiMsg, noteOff));
+					this.push(Object.assign({}, this.prevPartialMidiMsg, noteOff));
 				}
 				break;
 		}
 		this.prevTick = tick;
+		this.prevPartialMidiMsg = partialMidiMsg;
 		done();
 	}
 
