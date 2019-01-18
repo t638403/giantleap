@@ -4,8 +4,11 @@ module.exports = {
 	stringify: new Transform({
 		objectMode:true,
 		transform(obj, _enc, next) {
-			obj.t = obj.t.toString();
-			obj.tEnd = obj.tEnd.toString();
+			for(let k in obj) {
+				if(typeof obj[k] === 'bigint') {
+					obj[k] = obj[k].toString();
+				}
+			}
 			this.push(JSON.stringify(obj) + '\n');
 			next();
 		}
