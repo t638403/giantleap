@@ -21,7 +21,7 @@ class Metronome extends Readable {
 		this.start;
 	}
 	_read() {
-		if(this.beatIndex > 4) {
+		if(this.beatIndex >= 4) {
 			return this.push(null);
 		}
 		if(!this.isSwingBeat) {
