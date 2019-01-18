@@ -3,6 +3,7 @@ const Metronome = require('@giantleap/Metronome'),
 	Velocity    = require('@giantleap/Velocity'),
 	Note        = require('@giantleap/Note'),
 	Instrument  = require('@giantleap/Instrument'),
+	MidiMsgr     = require('@giantleap/MidiMsgr')
 	Json        = require('@giantleap/JSON')
 ;
 
@@ -17,6 +18,7 @@ const electribe = new Instrument(0, 2);
 	.pipe(new Velocity('036'))
 	.pipe(new Note(eHH_CLOSED))
 	.pipe(electribe)
+	.pipe(new MidiMsgr())
 	.pipe(Json.stringify)
 	.pipe(process.stdout)
 ;
