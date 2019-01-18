@@ -5,6 +5,7 @@ module.exports = {
 		objectMode:true,
 		transform(obj, _enc, next) {
 			obj.t = obj.t.toString();
+			obj.tEnd = obj.tEnd.toString();
 			this.push(JSON.stringify(obj) + '\n');
 			next();
 		}
