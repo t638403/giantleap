@@ -9,12 +9,12 @@ class Velocity extends Transform {
 	constructor(velocities) {
 		super({objectMode:true});
 		this.velocities = RingBuffer(isArray(velocities) ? velocities : velocities.split('').map(v => parseInt(v, 10)));
-		this.prevVelocity = null;
 	}
 
 	_transform(partialMidiMsg, _enc, next) {
 
-		const velocity = Math.floor((1 / this.velocities.next().value) * 127);
+		const v = this.velocities.next().value;
+		const velocity = Math.floor( (v / 10) * 127);
 		this.push(Object.assign({}, partialMidiMsg, {velocity}));
 
 		next();
