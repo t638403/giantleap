@@ -1,5 +1,5 @@
 // File double-stream.js
-const {Transform} = require('stream'),
+const { Transform } = require('stream'),
 	RingBuffer = require('@giantleap/utils/RingBuffer'),
 	isArray = require('lodash/isArray')
 ;
@@ -17,8 +17,8 @@ class Pattern extends Transform {
 
 	_transform(partialMidiMsg, encoding, done) {
 		const tick = this.pattern.next().value;
-		const noteOff = {on:0};
-		const noteOn = {on:1};
+		const noteOff = {msg:'noteOff'};
+		const noteOn = {msg:'noteOn'};
 		switch(tick) {
 			case 'x':
 				if(this.prevTick === 'x' || this.prevTick === '=') {
