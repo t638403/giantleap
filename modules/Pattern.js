@@ -49,6 +49,17 @@ class Pattern extends Transform {
 		done();
 	}
 
+	/**
+	 * The pattern can never know when to end the last note, so it ends the last note in a second
+	 *
+	 * @param done
+	 * @private
+	 */
+	_flush(done) {
+		const noteOff = Object.assign({}, this.prevPartialMidiMsg, {msg:'noteOff', t:this.prevPartialMidiMsg.t + BigInt(1000000000)});
+		this.push(noteOff);
+	}
+
 }
 
 module.exports = Pattern;
