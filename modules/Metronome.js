@@ -9,8 +9,9 @@ class Metronome extends Readable {
 	 * @param bpm {number} Beats per minute
 	 * @param ticksPerBeat {times} Note type, for example 4 for quarter notes
 	 * @param swing {number} Percentage of swing, for example 0.5 for 50% swing on every other note
+	 * @param offset {integer} schedule al notes a little later
 	 */
-	constructor(bpm, ticksPerBeat, swing = 0) {
+	constructor(bpm, ticksPerBeat, swing = 0, offset = 1000000000n) {
 		super({objectMode:true, highWaterMark:5000});
 		this.beatIndex = 0n;
 		const interval = (60000000000 / (ticksPerBeat * bpm));
@@ -18,6 +19,7 @@ class Metronome extends Readable {
 		this.swing    = BigInt( Math.round( swing * interval ) );
 		this.isSwingBeat = false;
 		this.play = false;
+		this.offset = BigInt(offset);
 		this.start;
 	}
 	_read() {
@@ -26,9 +28,9 @@ class Metronome extends Readable {
 		// 	return this.push(null);
 		// }
 		if(!this.isSwingBeat) {
-			this.push( { t: (this.beatIndex * this.interval) });
+			this.push( { t: this.offset + (this.beatIndex * this.interval) });
 		} else {
-			this.push( { t: (( this.beatIndex * this.interval ) + this.swing) } );
+			this.push( { t: this.offset + (( this.beatIndex * this.interval ) + this.swing) } );
 		}
 		this.isSwingBeat = !this.isSwingBeat;
 		this.beatIndex++;
