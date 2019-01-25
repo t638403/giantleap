@@ -2,7 +2,7 @@ const { Transform } = require('stream');
 
 class Stitch extends Transform {
 	constructor() {
-		super({objectMode:true});
+		super({objectMode:true, highWaterMark:5000});
 		this.activeStreamIndex = 0;
 		this.streams = [];
 

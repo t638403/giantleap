@@ -5,7 +5,7 @@ const isArray       = require('lodash/isArray');
 
 class Note extends Transform {
 	constructor(notes) {
-		super({objectMode:true});
+		super({objectMode:true, highWaterMark:5000});
 		this.notes = RingBuffer(isArray(notes) ? notes : [notes]);
 	}
 

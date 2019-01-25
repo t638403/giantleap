@@ -4,13 +4,13 @@ const FastPriorityQueue = require("fastpriorityqueue");
 class TimeSort extends Transform {
 
 	constructor() {
-		super({objectMode:true});
+		super({objectMode:true, highWaterMark:5000});
 		this.q = new FastPriorityQueue( (a, b) => a.t < b.t );
 	}
 
 	_transform(msg, _enc, next) {
 		this.q.add(msg);
-		if(this.q.size > 5000) {
+		if(this.q.size > 1000) {
 			this.push(this.q.poll());
 		}
 		next();

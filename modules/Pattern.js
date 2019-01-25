@@ -7,7 +7,7 @@ const { Transform } = require('stream'),
 class Pattern extends Transform {
 
 	constructor(patStr) {
-		super({objectMode:true});
+		super({objectMode:true, highWaterMark:5000});
 		if(isArray(patStr)) {
 			patStr = patStr.join('');
 		}

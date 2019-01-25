@@ -2,7 +2,7 @@ const { Transform } = require('stream');
 
 module.exports = {
 	stringify: new Transform({
-		objectMode:true,
+		objectMode:true, highWaterMark:5000,
 		transform(obj, _enc, next) {
 			this.push(JSON.stringify(obj, (k, v) => {
 				if(typeof v === 'bigint') {
@@ -14,7 +14,7 @@ module.exports = {
 		}
 	}),
 	parse: new Transform({
-		objectMode: true,
+		objectMode:true, highWaterMark:5000,
 		transform(str, _enc, next) {
 			this.push(JSON.parse(str.toString()));
 			next();

@@ -11,7 +11,7 @@ class Metronome extends Readable {
 	 * @param swing {number} Percentage of swing, for example 0.5 for 50% swing on every other note
 	 */
 	constructor(bpm, ticksPerBeat, swing = 0) {
-		super({objectMode:true});
+		super({objectMode:true, highWaterMark:5000});
 		this.beatIndex = 0n;
 		const interval = (60000000000 / (ticksPerBeat * bpm));
 		this.interval = BigInt( Math.round(interval) );

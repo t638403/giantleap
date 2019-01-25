@@ -5,7 +5,7 @@ const PriorityQueue = require('@giantleap/utils/PriorityQueue');
 class MidiOut extends Writable {
 
 	constructor() {
-		super({objectMode: true});
+		super({objectMode:true, highWaterMark:5000});
 
 		MidiOut.displayAvailablePorts();
 
