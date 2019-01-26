@@ -2,6 +2,7 @@ const Metronome = require('@giantleap/Metronome'),
 	Pattern     = require('@giantleap/Pattern'),
 	Velocity    = require('@giantleap/Velocity'),
 	Note        = require('@giantleap/Note'),
+	Chord       = require('@giantleap/Chord'),
 	Clock       = require('@giantleap/Clock'),
 	Instrument  = require('@giantleap/Instrument'),
 	Out         = require('@giantleap/Out')
@@ -31,10 +32,14 @@ const midiClock = () => new Metronome(bpm, 24);
 
 m120()
 	.pipe(new Pattern([
-		'x...'
+		'x==='
 	]))
-	.pipe(new Note('C2'))
-	.pipe(electribe())
+	.pipe(new Chord([
+		['C3', 'D#3', 'G3'],
+		['D3', 'F3', 'A3'],
+		['A#2', 'D3', 'F3'],
+	], 1))
+	.pipe(yamaha())
 	.pipe(new Out())
 ;
 
