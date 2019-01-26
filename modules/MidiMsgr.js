@@ -29,6 +29,16 @@ class MidiMsgr extends Transform {
 					msg:msgr.clock()
 				});
 				break;
+			case 'nrpn':
+				const midiMsgs = msgr.nrpn(msg.channel, msg.nm, msg.nl, msg.dm, msg.dl);
+				for(const midiMsg of midiMsgs) {
+					this.push({
+						device: msg.device,
+						t: msg.t,
+						msg:midiMsg
+					});
+				}
+				break;
 			default:
 				// do stuff one day
 		}

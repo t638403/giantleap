@@ -63,11 +63,8 @@
 		"key": "S1",
 		"nm": "0x02",
 		"nl": "0x04",
-		"dm": {
-			"Sin": 0,
-			"Tri": 64
-		},
-		"dl": "0x06"
+		"dl": "0x06",
+		"description": "dm: 0 for sinus and 64 for triangle"
 	},
 	{
 		"type": "nrpn",
@@ -483,11 +480,8 @@
 		"key": "A1",
 		"nm": "0x02",
 		"nl": "0x68",
-		"dm": {
-			"from": 0,
-			"to": 100
-		},
-		"dl": "0x68"
+		"dl": "0x68",
+		"description": "dm: From 0 to 100, e.g. NOT 127"
 	},
 	{
 		"type": "nrpn",
