@@ -3,7 +3,8 @@ const { Transform } = require('stream');
 const Stitch      = require('@giantleap/Stitch'),
 	MidiMsgr    = require('@giantleap/MidiMsgr'),
 	MidiOut     = require('@giantleap/MidiOut'),
-	TimeSort    = require('@giantleap/TimeSort')
+	TimeSort    = require('@giantleap/TimeSort'),
+	Tap         = require('@giantleap/Tap')
 ;
 
 class Out extends Stitch {
