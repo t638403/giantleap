@@ -7,7 +7,6 @@ class Tap extends Transform {
 	}
 
 	_transform(o, _enc, next) {
-		console.log(o);
 		this.cb(o);
 		this.push(o);
 		next();
