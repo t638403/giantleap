@@ -11,39 +11,36 @@ class Pattern extends Transform {
 		if(isArray(patStr)) {
 			patStr = patStr.join('');
 		}
-		this.prevTick = null;
-		this.noteOn = null;
+		this.prevStepType = null;
+
+		// A hit is a key press with a duration (eventually)
+		this.hit = null;
 		this.pattern = RingBuffer(patStr.split(''));
 	}
 
-	_transform(partialMidiMsg, encoding, done) {
+	_transform(step, encoding, done) {
 
-		const tick = this.pattern.next().value;
-		const hit = Object.assign({}, partialMidiMsg, {msg:'note'});
-
-		switch(tick) {
+		const stepType = this.pattern.next().value;
+		switch(stepType) {
 			case 'x':
-				if(this.prevTick === 'x' || this.prevTick === '=') {
+				if(this.prevStepType === 'x' || this.prevStepType === '=') {
 					// There must be a tiny delay between noteOff and noteOn or machines start to expose undesirable
 					// behaviour, like hanging notes. 3ms seems to be long enough for our mighty machines to react, and
 					// it is short enough for us mighty humans to not notice.
-					this.noteOn.tEnd = hit.t - 3000000n;
-					this.push(Object.assign({}, this.noteOn));
-					this.noteOn = hit;
-				} else {
-					this.noteOn = hit;
+					this.hit.tEnd = step.t - 3000000n;
+					this.push(Object.assign({}, this.hit));
 				}
+				this.hit = Object.assign({}, step, {msg:'note'});
 				break;
 			case '.':
-				if(this.prevTick === '=' || this.prevTick === 'x') {
-					this.noteOn.tEnd = hit.t;
-					this.push(Object.assign({}, this.noteOn));
-					this.noteOn = null;
+				if(this.prevStepType === '=' || this.prevStepType === 'x') {
+					this.hit.tEnd = step.t;
+					this.push(Object.assign({}, this.hit));
+					this.hit = null;
 				}
 				break;
 		}
-		this.prevTick = tick;
-		this.noteOn = hit;
+		this.prevStepType = stepType;
 		done();
 	}
 
@@ -54,8 +51,10 @@ class Pattern extends Transform {
 	 * @private
 	 */
 	_final(done) {
-		this.noteOn.tEnd = this.noteOn.t + 1000000000n;
-		this.push(Object.assign({}, this.noteOn));
+		if (this.hit !== null) {
+			this.hit.tEnd = this.hit.t + 1000000000n;
+			this.push(Object.assign({}, this.hit));
+		}
 		done();
 	}
 
