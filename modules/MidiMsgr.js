@@ -22,6 +22,13 @@ class MidiMsgr extends Transform {
 					msg:msgr.noteOff(msg.channel, msg.key || 'C2', msg.velocity || 127)
 				});
 				break;
+			case 'clock':
+				this.push({
+					device: msg.device,
+					t: msg.t,
+					msg:msgr.clock()
+				});
+				break;
 			default:
 				// do stuff one day
 		}
