@@ -7,8 +7,7 @@ class Nrpn extends Transform {
 	}
 
 	_transform(partialMidiMsg, _enc, next) {
-		const nrpn = Object.assign({}, partialMidiMsg, this.partialNrpn, {dm:partialMidiMsg.value});
-		this.push(Object.assign({}, nrpn, {msg:'nrpn'}));
+		this.push(Object.assign({}, partialMidiMsg, this.partialNrpn, {msg:'nrpn'}));
 		next();
 	}
 }
