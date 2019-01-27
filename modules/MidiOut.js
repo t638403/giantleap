@@ -1,6 +1,7 @@
-const { Writable } = require('stream');
+const { Writable }  = require('stream');
 const midi          = require('midi');
 const PriorityQueue = require('@giantleap/utils/PriorityQueue');
+const invert        = require('lodash/invert');
 
 class MidiOut extends Writable {
 
@@ -8,6 +9,7 @@ class MidiOut extends Writable {
 		super({objectMode:true, highWaterMark:5000});
 
 		MidiOut.displayAvailablePorts();
+		this.ports = invert(MidiOut.availablePorts());
 
 		// This will be filled when msgs come along in _transform
 		this.outs = [];
@@ -26,7 +28,11 @@ class MidiOut extends Writable {
 			const now = process.hrtime.bigint() - startTime;
 
 			while (this.curr && this.curr.t <= now) {
-				this.outs[this.curr.device].sendMessage(this.curr.msg);
+
+				// Check if port is available, e.g. physical instrument is switched on
+				if(this.curr.device in this.ports) {
+					this.outs[this.curr.device].sendMessage(this.curr.msg);
+				}
 				this.curr.next();
 				this.curr = this.q.pop();
 			}
@@ -35,7 +41,7 @@ class MidiOut extends Writable {
 	}
 
 	_write(msg, _enc, next) {
-		if(!this.outs[msg.device]) {
+		if(!this.outs[msg.device] && msg.device in this.ports) {
 			this.outs[msg.device] = new midi.output();
 			this.outs[msg.device].openPort(msg.device);
 		}
@@ -51,13 +57,23 @@ class MidiOut extends Writable {
 		done();
 	}
 
-	static displayAvailablePorts() {
+	static availablePorts() {
+		const ports = {};
 		const tempOut = new midi.output();
 		const portCount = tempOut.getPortCount();
 		for(let i=0; i < portCount; i++) {
-			console.log(`${i}: ${tempOut.getPortName(i)}`);
+			ports[tempOut.getPortName(i)] = i;
 		}
 		tempOut.closePort();
+		return ports;
+	}
+
+	static displayAvailablePorts() {
+		const ports = MidiOut.availablePorts();
+		for(const portName in ports) {
+			const port = ports[portName];
+			console.log(`${port}: ${portName}`);
+		}
 	}
 
 }
