@@ -1,31 +1,66 @@
-const giantLeap = require('@giantleap');
-giantLeap((
-	{ yamaha, ensoniq },
-	{ Metronome, Pattern, Chord, Out, Note, sendMidiClock }) => {
+const Metronome = require('@giantleap/Metronome'),
+	Pattern     = require('@giantleap/Pattern'),
+	Velocity    = require('@giantleap/Velocity'),
+	Note        = require('@giantleap/Note'),
+	Value       = require('@giantleap/Value'),
+	Nrpn        = require('@giantleap/Nrpn'),
+	Chord       = require('@giantleap/Chord'),
+	Ctrl        = require('@giantleap/Ctrl'),
+	Clock       = require('@giantleap/Clock'),
+	Device      = require('@giantleap/Device'),
+	Instrument  = require('@giantleap/Instrument'),
+	Electribe   = require('@giantleap/Electribe'),
+	Out         = require('@giantleap/Out'),
+	MidiOut     = require('@giantleap/MidiOut'),
+	JSON        = require('@giantleap/JSON'),
+	RingBuffer  = require('@giantleap/utils/RingBuffer')
+;
 
-	const bpm = 120;
-	sendMidiClock(bpm);
-	const m120 = () => new Metronome(bpm, 4);
-	const m120_n = (n) => new Metronome(bpm, n);
+const ensoniq   = () => new Instrument(/MIDIMATE II \d\d:0/, 1);
 
-	m120()
-		.pipe(new Pattern([
-			'x==============.'
-		]))
-		.pipe(new Chord([
-			['C3', 'D#3', 'G3'],
-			// ['C3', 'D#3', 'G3'],
-			// ['C3', 'D#3', 'G3'],
-			// ['D3', 'F3', 'A3'],
-			// ['C3', 'D#3', 'G3'],
-			// ['C3', 'D#3', 'G3'],
-			// ['C3', 'D#3', 'G3'],
-			// ['A#2', 'D3', 'F3'],
-		], 1))
-		// .pipe(new Note('C3', 1))
-		.pipe(yamaha())
+const evolver   = () => new Instrument(/MIDIMATE II \d\d:1/, 2);
+const electribe = () => new Electribe (/MIDIMATE II \d\d:1/, 2);
+const yamaha    = () => new Instrument(/MIDIMATE II \d\d:1/, 3);
+
+const arp       = () => new Instrument(/ARPODYSSEY-FS \d\d:0/, 1);
+const doepfer   = () => new Instrument(/USB Device 0x7cd:0xfe06 \d\d:0/, 1);
+
+const sendMidiClock = (bpm) => Object
+	.values(MidiOut.availablePorts())
+	.forEach(port => (new Metronome(bpm, 24))
+		.pipe(new Clock())
+		.pipe(new Device(port))
 		.pipe(new Out())
-	;
+	)
+;
+
+// CLOCK ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+const bpm = 120;
+sendMidiClock(bpm);
+const m120 = () => new Metronome(bpm, 4);
+const m120_n = (n) => new Metronome(bpm, n);
+
+// SONG ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// m120()
+// 	.pipe(new Pattern([
+// 		'x==============.'
+// 	]))
+// 	.pipe(new Chord([
+// 		['C3', 'D#3', 'G3'],
+// 		// ['C3', 'D#3', 'G3'],
+// 		// ['C3', 'D#3', 'G3'],
+// 		// ['D3', 'F3', 'A3'],
+// 		// ['C3', 'D#3', 'G3'],
+// 		// ['C3', 'D#3', 'G3'],
+// 		// ['C3', 'D#3', 'G3'],
+// 		// ['A#2', 'D3', 'F3'],
+// 	], 1))
+// 	// .pipe(new Note('C3', 1))
+// 	.pipe(yamaha())
+// 	.pipe(new Out())
+// ;
 
 // m120()
 // 	.pipe(new Pattern([
@@ -58,12 +93,20 @@ giantLeap((
 // ;
 
 //
-	m120()
-		.pipe(new Pattern('..x.'))
-		.pipe(new Note('F#3'))
-		.pipe(ensoniq())
-		.pipe(new Out())
-	;
+m120()
+	.pipe(new Pattern('x...'))
+	.pipe(new Note('C3'), 1)
+	.pipe(doepfer())
+	.pipe(new Out())
+;
+
+m120_n(2)
+	.pipe(new Value())
+	.pipe(new Ctrl(1))
+	.pipe(doepfer())
+	.pipe(new Out())
+;
+
 // m120()
 // 	.pipe(new Pattern([
 // 		'....x.......x...',
@@ -114,6 +157,3 @@ giantLeap((
 // 	.pipe(electribe())
 // 	.pipe(new Out())
 // ;
-
-});
-

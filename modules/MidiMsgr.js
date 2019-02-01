@@ -39,6 +39,13 @@ class MidiMsgr extends Transform {
 					});
 				}
 				break;
+			case 'ctrl':
+				this.push({
+					device: msg.device,
+					t: msg.t,
+					msg:msgr.ctrl(msg.channel, msg.ctrl, msg.value)
+				});
+				break;
 			default:
 				// do stuff one day
 		}
