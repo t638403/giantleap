@@ -4,7 +4,7 @@ const MidiOut = require('@giantleap/MidiOut');
 class Instrument extends Transform {
 
 	constructor(reDeviceName, midiChannel) {
-		super({objectMode:true, highWaterMark:5000});
+		super({objectMode:true});
 
 		this.deviceNo = this.getDeviceNo(reDeviceName);
 		this.midiChannel = midiChannel;

@@ -5,7 +5,7 @@ const isArray       = require('lodash/isArray');
 
 class Note extends Transform {
 	constructor(notes, octaveOffset = 0) {
-		super({objectMode:true, highWaterMark:5000});
+		super({objectMode:true});
 		this.notes = RingBuffer( (isArray(notes) ? notes : [notes]).map(note => note.replace(/\d/, m => parseInt(m, 10) + octaveOffset)) );
 	}
 

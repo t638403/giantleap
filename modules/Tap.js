@@ -2,7 +2,7 @@ const { Transform } = require('stream');
 
 class Tap extends Transform {
 	constructor(cb = o => o) {
-		super({objectMode:true, highWaterMark:5000});
+		super({objectMode:true});
 		this.cb = cb;
 	}
 

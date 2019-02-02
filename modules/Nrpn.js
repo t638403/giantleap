@@ -2,7 +2,7 @@ const { Transform } = require('stream');
 
 class Nrpn extends Transform {
 	constructor(partialNrpn) {
-		super({objectMode:true, highWaterMark:5000});
+		super({objectMode:true});
 		this.partialNrpn = partialNrpn;
 	}
 

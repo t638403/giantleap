@@ -10,7 +10,7 @@ const {
 class MidiMsgr extends Transform {
 
 	constructor() {
-		super({objectMode:true, highWaterMark:5000});
+		super({objectMode:true});
 	}
 
 	_transform(msg, _enc, next) {

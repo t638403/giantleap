@@ -2,7 +2,7 @@ const { Transform } = require('stream');
 
 class Ctrl extends Transform {
 	constructor(ctrlNr) {
-		super({objectMode:true, highWaterMark:5000});
+		super({objectMode:true});
 		this.ctrlNr = ctrlNr;
 	}
 

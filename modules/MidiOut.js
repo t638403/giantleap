@@ -6,7 +6,7 @@ const invert        = require('lodash/invert');
 class MidiOut extends Writable {
 
 	constructor() {
-		super({objectMode:true, highWaterMark:5000});
+		super({objectMode:true});
 
 		MidiOut.displayAvailablePorts();
 		this.ports = invert(MidiOut.availablePorts());

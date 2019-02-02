@@ -7,7 +7,7 @@ const isArray       = require('lodash/isArray');
  */
 class Velocity extends Transform {
 	constructor(velocities) {
-		super({objectMode:true, highWaterMark:5000});
+		super({objectMode:true});
 		this.velocities = RingBuffer(isArray(velocities) ? velocities : velocities.split('').map(v => parseInt(v, 10)));
 	}
 

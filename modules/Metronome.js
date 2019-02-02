@@ -12,7 +12,7 @@ class Metronome extends Readable {
 	 * @param offset {integer} schedule al notes a little later
 	 */
 	constructor(bpm, ticksPerBeat, swing = 0, offset = 1000000000n) {
-		super({objectMode:true, highWaterMark:5000});
+		super({objectMode:true});
 		this.beatIndex = 0n;
 		const interval = (60000000000 / (ticksPerBeat * bpm));
 		this.interval = BigInt( Math.round(interval) );

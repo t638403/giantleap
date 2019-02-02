@@ -5,7 +5,7 @@ const isArray       = require('lodash/isArray');
 
 class Chord extends Transform {
 	constructor(chords, octaveOffset = 0) {
-		super({objectMode:true, highWaterMark:5000});
+		super({objectMode:true});
 		this.chords = RingBuffer(
 			chords.map(chord => chord.map(note => note.replace(/\d/, m => parseInt(m, 10) + octaveOffset)))
 		);

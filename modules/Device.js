@@ -3,7 +3,7 @@ const { Transform } = require('stream');
 class Device extends Transform {
 
 	constructor(deviceNo) {
-		super({objectMode:true, highWaterMark:5000});
+		super({objectMode:true});
 		this.deviceNo = deviceNo;
 	}
 

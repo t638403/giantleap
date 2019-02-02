@@ -5,7 +5,7 @@ const isArray       = require('lodash/isArray');
 
 class Clock extends Transform {
 	constructor() {
-		super({objectMode:true, highWaterMark:5000});
+		super({objectMode:true});
 	}
 
 	_transform(partialMidiMsg, _enc, next) {

@@ -3,7 +3,7 @@ const rand127 = () => Math.round(Math.random() * 127);
 
 class Value extends Transform {
 	constructor(cb = rand127) {
-		super({objectMode:true, highWaterMark:5000});
+		super({objectMode:true});
 		this.cb = cb;
 	}
 
