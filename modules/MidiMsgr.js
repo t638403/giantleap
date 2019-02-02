@@ -1,5 +1,11 @@
 const { Transform } = require('stream');
-const msgr = require('@giantleap/utils/Msgr')();
+const {
+	noteOn,
+	noteOff,
+	clock,
+	ctrl,
+	nrpn
+} = require('@giantleap/utils/Msgr');
 
 class MidiMsgr extends Transform {
 
@@ -14,23 +20,23 @@ class MidiMsgr extends Transform {
 				this.push({
 					device: msg.device,
 					t:msg.t,
-					msg:msgr.noteOn(msg.channel, msg.key || 'C2', msg.velocity || 127)
+					msg:noteOn(msg.channel, msg.key || 'C2', msg.velocity || 100)
 				});
 				this.push({
 					device: msg.device,
 					t:msg.tEnd,
-					msg:msgr.noteOff(msg.channel, msg.key || 'C2', msg.velocity || 127)
+					msg:noteOff(msg.channel, msg.key || 'C2', msg.velocity || 100)
 				});
 				break;
 			case 'clock':
 				this.push({
 					device: msg.device,
 					t: msg.t,
-					msg:msgr.clock()
+					msg:clock()
 				});
 				break;
 			case 'nrpn':
-				const midiMsgs = msgr.nrpn(msg.channel, msg.nm, msg.nl, msg.value, msg.dl);
+				const midiMsgs = nrpn(msg.channel, msg.nm, msg.nl, msg.value, msg.dl);
 				for(const midiMsg of midiMsgs) {
 					this.push({
 						device: msg.device,
@@ -43,7 +49,7 @@ class MidiMsgr extends Transform {
 				this.push({
 					device: msg.device,
 					t: msg.t,
-					msg:msgr.ctrl(msg.channel, msg.ctrl, msg.value)
+					msg:ctrl(msg.channel, msg.ctrl, msg.value)
 				});
 				break;
 			default:
