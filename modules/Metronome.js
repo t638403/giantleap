@@ -14,6 +14,8 @@ class Metronome extends Readable {
 	constructor(bpm, ticksPerBeat, swing = 0, offset = 1000000000n) {
 		super({objectMode:true});
 		this.beatIndex = 0n;
+		this.bpm = bpm;
+		this.ticksPerBeat = ticksPerBeat;
 		const interval = (60000000000 / (ticksPerBeat * bpm));
 		this.interval = BigInt( Math.round(interval) );
 		this.swing    = BigInt( Math.round( swing * interval ) );
@@ -28,9 +30,9 @@ class Metronome extends Readable {
 		// 	return this.push(null);
 		// }
 		if(!this.isSwingBeat) {
-			this.push( { t: this.offset + (this.beatIndex * this.interval) });
+			this.push( { t: this.offset + (this.beatIndex * this.interval), bpm:this.bpm, tpb:this.ticksPerBeat });
 		} else {
-			this.push( { t: this.offset + (( this.beatIndex * this.interval ) + this.swing) } );
+			this.push( { t: this.offset + (( this.beatIndex * this.interval ) + this.swing), bpm:this.bpm, tpb:this.ticksPerBeat  } );
 		}
 		this.isSwingBeat = !this.isSwingBeat;
 		this.beatIndex++;
