@@ -92,10 +92,30 @@ const m120_n = (n) => new Metronome(bpm, n);
 // 	.pipe(new Out())
 // ;
 
-//
 m120()
 	.pipe(new Pattern('x...'))
 	.pipe(new Note(Electribe.S1))
+	.pipe(electribe())
+	.pipe(new Out())
+;
+
+m120()
+	.pipe(new Pattern('....x...'))
+	.pipe(new Note(Electribe.CLAP))
+	.pipe(electribe())
+	.pipe(new Out())
+;
+
+m120()
+	.pipe(new Pattern('xx..'))
+	.pipe(new Note(Electribe.HH_CLOSE))
+	.pipe(electribe())
+	.pipe(new Out())
+;
+
+m120()
+	.pipe(new Pattern('..x.'))
+	.pipe(new Note(Electribe.HH_OPEN))
 	.pipe(electribe())
 	.pipe(new Out())
 ;
