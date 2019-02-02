@@ -95,15 +95,8 @@ const m120_n = (n) => new Metronome(bpm, n);
 //
 m120()
 	.pipe(new Pattern('x...'))
-	.pipe(new Note('C3'), 1)
-	.pipe(doepfer())
-	.pipe(new Out())
-;
-
-m120_n(2)
-	.pipe(new Value())
-	.pipe(new Ctrl(1))
-	.pipe(doepfer())
+	.pipe(new Note(Electribe.S1))
+	.pipe(electribe())
 	.pipe(new Out())
 ;
 
