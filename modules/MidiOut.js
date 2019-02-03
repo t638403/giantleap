@@ -29,7 +29,7 @@ class MidiOut extends Writable {
 			while (this.curr && this.curr.t <= now) {
 				const diff = now - this.curr.t;
 				if(diff > 1000000000n) {
-					console.warn(`Diff: ${Math.round(Number(diff / 10000000n)) / 100}, Msg: ${this.curr.msg}`);
+					console.warn(`${now / 1000000000n} Diff: ${Math.round(Number(diff / 10000000n)) / 100}, Msg: ${this.curr.msg}`);
 				}
 				// Check if port is available, e.g. physical instrument is switched on
 				if(this.curr.device in this.ports) {
