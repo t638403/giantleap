@@ -10,7 +10,7 @@ class TimeSort extends Transform {
 
 	_transform(msg, _enc, next) {
 		this.q.add(msg);
-		if(this.q.size > 10000) {
+		if(this.q.size > 500) {
 			this.push(this.q.poll());
 		}
 		next();
