@@ -1,7 +1,8 @@
 const { Writable }  = require('stream');
 const midi          = require('midi');
 const PriorityQueue = require('@giantleap/utils/PriorityQueue');
-const invert        = require('lodash/invert');
+const invert         = require('lodash/invert');
+const chalk         = require('chalk');
 
 class MidiOut extends Writable {
 
@@ -28,8 +29,11 @@ class MidiOut extends Writable {
 			const now = process.hrtime.bigint() - startTime;
 			while (this.curr && this.curr.t <= now) {
 				const diff = now - this.curr.t;
+				const logMsg = `${now / 1000000000n}: ${this.curr.t} Diff: ${Math.round(Number(diff / 10000000n)) / 100}, Msg: ${this.curr.msg}`;
 				if(diff > 1000000000n) {
-					console.warn(`${now / 1000000000n} Diff: ${Math.round(Number(diff / 10000000n)) / 100}, Msg: ${this.curr.msg}`);
+					console.log(chalk.red(logMsg));
+				} else {
+                    console.log(chalk.green(logMsg));
 				}
 				// Check if port is available, e.g. physical instrument is switched on
 				if(this.curr.device in this.ports) {
