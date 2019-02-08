@@ -1,6 +1,6 @@
 {
 	"name": "giantleap",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"dependencies": {
 		"midi": "0.9.5"
 	},
