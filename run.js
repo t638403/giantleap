@@ -1,12 +1,13 @@
 const Metronome = require('@giantleap/Metronome'),
 	Pattern     = require('@giantleap/Pattern'),
 
-	Velocity    = require('@giantleap/Velocity'),
-	Value       = require('@giantleap/Value'),
 	Note        = require('@giantleap/Note'),
 	Chord       = require('@giantleap/Chord'),
+	Velocity    = require('@giantleap/Velocity'),
+
 	Ctrl        = require('@giantleap/Ctrl'),
 	Nrpn        = require('@giantleap/Nrpn'),
+	Value       = require('@giantleap/Value'),
 
 	Clock       = require('@giantleap/Clock'),
 	Device      = require('@giantleap/Device'),
@@ -51,7 +52,8 @@ const getMidiClocks = (bpm) => Object
 // CLOCK ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const bpm = 120;
 const clocks = getMidiClocks(bpm);
-const m120 = () => new Metronome(bpm, 4);
+const m120 = () => new Metronome(bpm, 4, 0.3);
+const m80 = () => new Metronome(80, 4);
 const m120_n = (n) => new Metronome(bpm, n);
 
 // SONG ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
