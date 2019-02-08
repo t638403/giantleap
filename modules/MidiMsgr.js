@@ -1,5 +1,5 @@
 const { Transform } = require('stream');
-const FastPriorityQueue = require("fastpriorityqueue");
+const NaivePriorityQueue = require("@giantleap/utils/NaivePriorityQueue");
 
 const {
 	noteOn,
@@ -13,7 +13,7 @@ class MidiMsgr extends Transform {
 
 	constructor() {
 		super({objectMode:true});
-		this.pq = new FastPriorityQueue( (a, b) => a.t < b.t );
+		this.pq = new NaivePriorityQueue( (a, b) => a.t < b.t );
 	}
 
 	_transform(msg, _enc, next) {
