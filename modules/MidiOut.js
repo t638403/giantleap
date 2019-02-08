@@ -1,6 +1,6 @@
 const { Writable } = require('stream');
 const midi         = require('midi');
-const invert       = require('lodash/invert');
+const invert       = require('@giantleap/utils/underdash/invert');
 
 class MidiOut extends Writable {
 

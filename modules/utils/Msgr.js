@@ -1,5 +1,5 @@
-const isNumber = require('lodash/isNumber');
-const isString = require('lodash/isString');
+const isNumber = require('@giantleap/utils/underdash/isNumber');
+const isString = require('@giantleap/utils/underdash/isString');
 
 const noteOn = (channelNr, noteName_or_noteNr, velocity) => {
 	const note_on = 143 + channelNr;

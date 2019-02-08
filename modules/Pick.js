@@ -1,5 +1,5 @@
 const { Transform } = require('stream');
-const pick = require('lodash/pick');
+const pick = require('@giantleap/utils/underdash/pick');
 
 class Pick extends Transform {
     constructor(keys) {

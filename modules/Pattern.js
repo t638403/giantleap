@@ -1,7 +1,7 @@
 // File double-stream.js
 const { Transform } = require('stream'),
 	RingBuffer = require('@giantleap/utils/RingBuffer'),
-	isArray = require('lodash/isArray')
+	isArray = require('@giantleap/utils/underdash/isArray')
 ;
 
 class Pattern extends Transform {

@@ -1,6 +1,6 @@
 const { Transform } = require('stream');
 const RingBuffer    = require('@giantleap/utils/RingBuffer');
-const isArray       = require('lodash/isArray');
+const isArray       = require('@giantleap/utils/underdash/isArray');
 
 /**
  * Just like Pattern but for velocities

@@ -1,0 +1,1 @@
+const isNumber = (o) => typeof o === 'number';
