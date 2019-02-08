@@ -71,9 +71,9 @@ const notes = new Note([
 ]);
 ```
 ### 3. Find out midi devices
-If you have no midi hardware you can still download dozens of virtual devices like [synthv1](https://synthv1.sourceforge.io/).
-Once installed run `synthv1` and run the following js lines. Do not forget to connect the plugin to your sound cards
-output. I use [Patchage](https://drobilla.net/software/patchage) to do so.
+If you have no midi hardware you can still download dozens of virtual devices like 
+[synthv1](https://synthv1.sourceforge.io/). Once installed run `synthv1` and connect it to the output so you can hear 
+it (use [Patchage](https://drobilla.net/software/patchage) for example). Then run the following js lines.
 ```
 const MidiOut = require('@giantleap/MidiOut');
 MidiOut.displayAvailablePorts();
@@ -84,6 +84,10 @@ You'll see something like this.
 1: synthv1 129:0
 ```
 
+synthv1 has a MIDI in indicator, in the bottem left corner, which flashes when it receives midi input. When it flashes
+but you do not hear anything you're on the right track at least. Just find out how to connect it to your sound device
+or turn on the volume.
+
 ### 4. Create an instrument
 An instrument adds two keys to the message, device and midi channel.
 ```
@@ -92,9 +96,10 @@ const deviceName = /synthv1 \d+:0/;
 const Instrument = require('@giantleap/Instrument');
 const synthv1 = new Instrument(deviceName, midiChannel);
 ``` 
-Note 1: I use a short reg exp notation to select the device, since numbers seem to change.
-Note 2: ALSA makes sensible device names like Jack does not.
-Note 3: You can compile node-midi for jack by changing the binding.gyp file in the npm package. You'll find 
+
+* Note 1: I use a short reg exp notation to select the device, since numbers seem to change.
+* Note 2: ALSA makes sensible device names like Jack does not.
+* Note 3: You can compile node-midi for jack by changing the binding.gyp file in the npm package. You'll find 
 `__LINUX_ALSA__` somewhere. Change it to `	__UNIX_JACK__` or [rfm](https://www.music.mcgill.ca/~gary/rtmidi/#compiling). 
 
 ### 5. Stitch together
