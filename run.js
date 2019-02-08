@@ -51,7 +51,6 @@ const getMidiClocks = (bpm) => Object
 
 // CLOCK ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const bpm = 120;
-const clocks = getMidiClocks(bpm);
 const m120 = () => new Metronome(bpm, 4, 0.3);
 const m80 = () => new Metronome(80, 4);
 const m120_n = (n) => new Metronome(bpm, n);
@@ -59,7 +58,7 @@ const m120_n = (n) => new Metronome(bpm, n);
 // SONG ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const streams = [
 
-	...clocks,
+	...getMidiClocks(bpm),
 
 	m120()
 		.pipe(new Pattern([
