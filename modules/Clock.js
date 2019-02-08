@@ -1,7 +1,4 @@
 const { Transform } = require('stream');
-const RingBuffer    = require('@giantleap/utils/RingBuffer');
-const isArray       = require('lodash/isArray');
-
 
 class Clock extends Transform {
 	constructor() {

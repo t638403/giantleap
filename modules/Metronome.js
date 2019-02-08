@@ -1,5 +1,4 @@
-const {Readable} = require('stream')
-;
+const { Readable } = require('stream');
 
 class Metronome extends Readable {
 
@@ -25,10 +24,6 @@ class Metronome extends Readable {
 		this.start;
 	}
 	_read() {
-		// End seqence after 200 notes
-		// if(this.beatIndex >= 200) {
-		// 	return this.push(null);
-		// }
 		if(!this.isSwingBeat) {
 			this.push( { t: this.offset + (this.beatIndex * this.interval), bpm:this.bpm, tpb:this.ticksPerBeat });
 		} else {

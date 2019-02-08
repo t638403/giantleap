@@ -25,8 +25,8 @@ class Pattern extends Transform {
 			case 'x':
 				if(this.prevStepType === 'x' || this.prevStepType === '=') {
 					// There must be a tiny delay between noteOff and noteOn or machines start to expose undesirable
-					// behaviour, like hanging notes. 3ms seems to be long enough for our mighty machines to react, and
-					// it is short enough for us mighty humans to not notice.
+					// behaviour, like hanging notes. 3ms seems long enough for our machines to react, and it is short
+					// enough for us humans to not notice.
 					this.hit.tEnd = step.t - 3000000n;
 					this.push(Object.assign({}, this.hit));
 				}

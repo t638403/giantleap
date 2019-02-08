@@ -1,23 +1,21 @@
-const { Transform } = require('stream');
-
 const Metronome = require('@giantleap/Metronome'),
 	Pattern     = require('@giantleap/Pattern'),
+
 	Velocity    = require('@giantleap/Velocity'),
-	Note        = require('@giantleap/Note'),
 	Value       = require('@giantleap/Value'),
-	Nrpn        = require('@giantleap/Nrpn'),
+	Note        = require('@giantleap/Note'),
 	Chord       = require('@giantleap/Chord'),
 	Ctrl        = require('@giantleap/Ctrl'),
+	Nrpn        = require('@giantleap/Nrpn'),
+
 	Clock       = require('@giantleap/Clock'),
 	Device      = require('@giantleap/Device'),
 	Instrument  = require('@giantleap/Instrument'),
 	Electribe   = require('@giantleap/Electribe'),
-	Pick        = require('@giantleap/Pick'),
-	MidiOut     = require('@giantleap/MidiOut'),
+
 	Stitch      = require('@giantleap/Stitch'),
 	MidiMsgr    = require('@giantleap/MidiMsgr'),
-	Json        = require('@giantleap/JSON'),
-	RingBuffer  = require('@giantleap/utils/RingBuffer')
+	MidiOut     = require('@giantleap/MidiOut')
 ;
 
 const ensoniq1   = () => new Instrument(/MIDIMATE II \d\d:0/, 1);
@@ -40,7 +38,6 @@ const sendMidiClock = (bpm) => Object
 ;
 
 // CLOCK ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 const bpm = 120;
 const clocks = sendMidiClock(bpm);
 const m120 = () => new Metronome(bpm, 4);

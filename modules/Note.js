@@ -2,7 +2,6 @@ const { Transform } = require('stream');
 const RingBuffer    = require('@giantleap/utils/RingBuffer');
 const isArray       = require('lodash/isArray');
 
-
 class Note extends Transform {
 	constructor(notes, octaveOffset = 0) {
 		super({objectMode:true});
