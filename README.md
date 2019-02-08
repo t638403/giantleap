@@ -14,11 +14,12 @@ Finally the properties are transformed to a message that can streamed to the fin
 the npm module node-midi really and keeps track of messages and if it is time to play them.
 
 So to sum up, messages are basic js objects. The `Metronome` creates messages and ads a time property. Any following
-transform streams add on to this object. Finally it written by `MidiOut` to `/dev/midi` somehow via `node-midi/RtMidi`.
+transform streams add on to this object. Finally its written by `MidiOut` to `/dev/midi` somehow via `node-midi/RtMidi`.
 
-When I mension a *message* I refer to a message it is really a plain old js object.
+When I mention a *message* I refer to a the plain old js object representing the message.
 
-Warning: Do **NOT** reuse any instantiated streams like the metronome. Just instantiate another one if you need it.
+Warning: Do **NOT** reuse any instantiated streams like the metronome. Just instantiate another one if you need it. The
+reason for this is that stream handlers communicate to each other. You don't want to mess with this communication.
 
 # Getting started
 
@@ -32,7 +33,6 @@ Dependencies:
 $ git clone git@github.com:t638403/giantleap.git
 $ cd giantleap
 $ npm install
-$ touch myFirstSong.js
 ```
 A symlink `@giantleap` is created in `node_modules`, so the modules from this project can be referenced this way.
 
