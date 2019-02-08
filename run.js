@@ -53,7 +53,12 @@ const streams = [
 	...clocks,
 
 	m120()
-		.pipe(new Pattern('x..x..x...x..x......x..x..x.x...'))
+		.pipe(new Pattern([
+			'x..x..x...x..x......x..x..x.x...',
+			'x..x..x...x..x.xx...x..x..x.x...',
+			'x..x..x...x..x......x..x..x.x.x.',
+			'x..x..x...x..x....xxx..x..x.x...',
+		]))
 		.pipe(new Note([
 			Electribe.S1
 		]))
@@ -70,6 +75,28 @@ const streams = [
 			Electribe.HH_CLOSE,
 			Electribe.HH_OPEN,
 			Electribe.HH_CLOSE,
+		]))
+		.pipe(electribe()),
+
+	m120()
+		.pipe(new Nrpn(Electribe.nrpn('HH OPEN', 'Decay')))
+		.pipe(new Value([
+			5,1,2,3,3,4,2,2,
+			2,1,7,1,2,1,1,0,
+			5,1,2,3,10,10,20,20,
+			2,1,30,1,2,1,1,0,
+			5,1,2,3,3,4,2,2,
+			2,1,7,1,2,1,1,0,
+			5,1,2,3,6,3,0,20,
+			20,10,7,1,2,1,1,0,
+			5,1,2,3,3,4,2,2,
+			2,1,7,50,2,1,1,0,
+			5,1,2,3,10,10,20,20,
+			2,1,30,1,2,1,1,0,
+			5,1,2,3,3,4,2,2,
+			2,1,7,1,2,1,1,0,
+			5,20,2,3,6,3,0,20,
+			12,10,7,1,90,1,1,0,
 		]))
 		.pipe(electribe()),
 
