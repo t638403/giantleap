@@ -15,6 +15,15 @@ const nextActiveStreamIndex = (msgs) => {
 	return leastIndex;
 };
 
+/**
+ * This stream handler stitches together all the read/transform streams that are generating messages. It basically
+ * peeks at all values that all streams are willing to send and it sends the one with the lowest time stamp. This way
+ * it is guaranteed the messages this stream sends out are sequentially in order with respect to time.
+ *
+ * One drawback of this implementation is that when a read stream might be slow, it will return false and the process
+ * will crash because it is not able to determine the message with the lowest time stamp since `false` has not property
+ * t. I suspect this will never occur though, since the write stream is definately slower.
+ */
 class Stitch extends Transform {
 	constructor(streams) {
 		super({objectMode:true});
