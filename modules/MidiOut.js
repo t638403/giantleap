@@ -2,6 +2,11 @@ const { Writable } = require('stream');
 const midi         = require('midi');
 const invert       = require('@giantleap/utils/underdash/invert');
 
+/**
+ * The main purpose of the final part of the message stream is to measure time and send the message when the time is
+ * there. Furthermore it keeps track of the available and used midi devices and opens the device if it was not ready
+ * for receiving messages yet.
+ */
 class MidiOut extends Writable {
 
 	constructor() {
@@ -15,10 +20,16 @@ class MidiOut extends Writable {
 
 		this.q = [];
 
-		// The loop
-		const startTime = process.hrtime.bigint();
+
 		this.curr = null;
-		this.i = setInterval(() => {
+		this.i = null;
+	}
+
+	play() {
+
+		const startTime = process.hrtime.bigint();
+
+		return setInterval(() => {
 
 			if(!this.curr) {
 				this.curr = this.q.pop();
@@ -40,11 +51,17 @@ class MidiOut extends Writable {
 	}
 
 	_write(msg, _enc, next) {
+
+		if(!this.i) this.i = this.play();
+
+		// Check if midi device was available, and if not make it available
 		if(!this.outs[msg.device] && msg.device in this.ports) {
 			this.outs[msg.device] = new midi.output();
 			this.outs[msg.device].openPort(msg.device);
 		}
 
+		// Add the message to the queue. Attaching the next call back to the message because it must be called when this
+		// message is delivered. The delivery is handled in the
 		msg.next = next;
 		this.q.push(msg);
 

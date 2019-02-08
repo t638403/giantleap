@@ -18,6 +18,11 @@ const Metronome = require('@giantleap/Metronome'),
 	MidiOut     = require('@giantleap/MidiOut')
 ;
 
+/**
+ * Make up a reg exp for selecting the right midi device. Midi devices are listed when running this file.
+ *
+ * @returns {Instrument}
+ */
 const ensoniq1   = () => new Instrument(/MIDIMATE II \d\d:0/, 1);
 const ensoniq2   = () => new Instrument(/MIDIMATE II \d\d:0/, 2);
 const ensoniq3   = () => new Instrument(/MIDIMATE II \d\d:0/, 3);
@@ -29,7 +34,13 @@ const yamaha    = () => new Instrument(/MIDIMATE II \d\d:1/, 3);
 const arp       = () => new Instrument(/ARPODYSSEY-FS \d\d:0/, 1);
 const doepfer   = () => new Instrument(/USB Device 0x7cd:0xfe06 \d\d:0/, 1);
 
-const sendMidiClock = (bpm) => Object
+/**
+ * Get midi clocks for all connected devices
+ *
+ * @param bpm {number} The BPM, say 120
+ * @returns {Readable[]}
+ */
+const getMidiClocks = (bpm) => Object
 	.values(MidiOut.availablePorts())
 	.map(port => (new Metronome(bpm, 24))
 		.pipe(new Clock())
@@ -39,10 +50,9 @@ const sendMidiClock = (bpm) => Object
 
 // CLOCK ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const bpm = 120;
-const clocks = sendMidiClock(bpm);
+const clocks = getMidiClocks(bpm);
 const m120 = () => new Metronome(bpm, 4);
 const m120_n = (n) => new Metronome(bpm, n);
-
 
 // SONG ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const streams = [
@@ -147,6 +157,12 @@ const streams = [
 		.pipe(yamaha())
 ];
 
+/**
+ * All streams get stitched together here into one single (transform) stream and then sent to the MidiMsgr which in turn
+ * converts the message into a real midi message that can be sent using the npm module `midi`.
+ *
+ * Finally the MidiOut write stream measures the time and sends a MIDI message if the time is right.
+ */
 (new Stitch(streams))
 	.pipe(new MidiMsgr())
 	.pipe(new MidiOut())
