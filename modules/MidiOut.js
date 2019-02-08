@@ -18,9 +18,6 @@ class MidiOut extends Writable {
 		// This will be filled when msgs come along in _transform
 		this.outs = [];
 
-		this.q = [];
-
-
 		this.curr = null;
 		this.i = null;
 	}
@@ -31,20 +28,19 @@ class MidiOut extends Writable {
 
 		return setInterval(() => {
 
-			if(!this.curr) {
-				this.curr = this.q.pop();
-			}
-
 			const now = process.hrtime.bigint() - startTime;
-			while (this.curr && this.curr.t <= now) {
+
+			if(this.curr && this.curr.t <= now) {
+
 				const diff = now - this.curr.t;
 				const logMsg = `${now / 1000000000n}: ${this.curr.t} Diff: ${Math.round(Number(diff / 10000000n)) / 100}, Msg: ${this.curr.msg}`;
 				// Check if port is available, e.g. physical instrument is switched on
-				if(this.curr.device in this.ports) {
+				if (this.curr.device in this.ports) {
 					this.outs[this.curr.device].sendMessage(this.curr.msg);
 				}
+
 				this.curr.next();
-				this.curr = this.q.pop();
+
 			}
 
 		}, 0);
@@ -60,10 +56,10 @@ class MidiOut extends Writable {
 			this.outs[msg.device].openPort(msg.device);
 		}
 
-		// Add the message to the queue. Attaching the next call back to the message because it must be called when this
-		// message is delivered. The delivery is handled in the
+		// This message will be picked up by the setInterval callback. The next function is attached to the message so
+		// the interval callback can inform the stream when it is ready to receive new messages.
 		msg.next = next;
-		this.q.push(msg);
+		this.curr = msg;
 
 	}
 

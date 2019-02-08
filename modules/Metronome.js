@@ -10,7 +10,7 @@ class Metronome extends Readable {
 	 * @param swing {number} Percentage of swing, for example 0.5 for 50% swing on every other note
 	 * @param offset {integer} schedule al notes a little later
 	 */
-	constructor(bpm, ticksPerBeat, swing = 0, offset = 1000000000n) {
+	constructor(bpm, ticksPerBeat, swing = 0, offset = 0n) {
 		super({objectMode:true});
 		this.beatIndex = 0n;
 		this.bpm = bpm;
