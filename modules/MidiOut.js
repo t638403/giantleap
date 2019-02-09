@@ -1,6 +1,7 @@
 const { Writable } = require('stream');
 const midi         = require('midi');
 const invert       = require('@giantleap/utils/underdash/invert');
+const Msgr         = require('@giantleap/utils/Msgr');
 
 /**
  * The main purpose of the final part of the message stream is to measure time and send the message when the time is
@@ -54,6 +55,12 @@ class MidiOut extends Writable {
 		if(!this.outs[msg.device] && msg.device in this.ports) {
 			this.outs[msg.device] = new midi.output();
 			this.outs[msg.device].openPort(msg.device);
+
+			for(let channel=1; channel <=16; channel++) {
+				console.log(`All notes of: ${msg.device}/${channel}`);
+				this.outs[msg.device].sendMessage(Msgr.allNotesOff(channel));
+			}
+
 		}
 
 		// This message will be picked up by the setInterval callback. The next function is attached to the message so
