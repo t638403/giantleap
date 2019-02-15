@@ -12,7 +12,8 @@ class Value extends Transform {
 				this.cb = cbOrValues;
 				break;
 			case 'string':
-				this.ringBuf = RingBuffer(cbOrValues.split('').map(s => Math.round(parseInt(s, 10) * 127)));
+				const values = cbOrValues.split('').map(value => Math.round(parseInt(value, 10) * 0.1 * 127));
+				this.ringBuf = RingBuffer(values);
 				this.cb = () => this.ringBuf.next().value;
 		}
 
