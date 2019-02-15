@@ -1,5 +1,6 @@
 const Instrument  = require('@giantleap/Instrument');
 const json = require('@giantleap/instruments/electribe');
+const pick = require('@giantleap/utils/underdash/pick');
 
 class Electribe extends Instrument {
 
@@ -11,9 +12,8 @@ class Electribe extends Instrument {
 				&& param.name === paramName
 				&& param.key === key
 			)[0];
-		delete param.type;
 		if(!param) throw new Error(`No such param, ${key}/${paramName}`);
-		return param;
+		return pick(param, ['nm', 'nl', 'dl']);
 	}
 
 }
