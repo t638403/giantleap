@@ -62,6 +62,8 @@ const createSynchronizedTrigonometricFunction = (trigonometricFn = Math.sin) => 
 		console.warn('fn clipping');
 		value = 1;
 	}
+
+	return value;
 };
 
 /**
