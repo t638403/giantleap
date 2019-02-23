@@ -39,14 +39,14 @@ class MidiMsgr extends Transform {
 				this.push({
 					device: msg.device,
 					t:msg.t,
-					msg:noteOn(msg.channel, msg.key || 'C2', msg.velocity || 100)
+					msg:noteOn(msg.channel, msg.key || 'C2', msg.value || 100)
 				});
 
 				// Adding this node off message to the prio queue so it can be sent when the time is there.
 				this.pq.add({
 					device: msg.device,
 					t:msg.tEnd,
-					msg:noteOff(msg.channel, msg.key || 'C2', msg.velocity || 100)
+					msg:noteOff(msg.channel, msg.key || 'C2', msg.value || 100)
 				});
 
 				break;
