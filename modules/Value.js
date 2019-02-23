@@ -33,7 +33,13 @@ class Value extends Transform {
 	}
 }
 
-const createSynchronizedTrigonometricFunction = (trigonometricFn) => (bpm, factor = 0.5) => t => {
+/**
+ * Create a function that can create either a cosinus or a sinus or any other trigonometric fn
+ *
+ * @param trigonometricFn
+ * @returns {function(*=, *=): function(*)}
+ */
+const createSynchronizedTrigonometricFunction = (trigonometricFn = Math.sin) => (bpm, factor = 0.5, times = 1, add = 0) => t => {
 	let cycleInNs;
 	if(factor < 1) {
 		cycleInNs = ((60n * 1000000000n) / BigInt(bpm)) * BigInt(1 / factor);
@@ -42,8 +48,20 @@ const createSynchronizedTrigonometricFunction = (trigonometricFn) => (bpm, facto
 	}
 	const nrOfCycles = t / cycleInNs;
 	t = Number(t - nrOfCycles * cycleInNs);
-	const actual = trigonometricFn( (t / Number(cycleInNs)) * (2 * Math.PI) );
-	return 0.5 * actual + 0.5;
+	let value = trigonometricFn( (t / Number(cycleInNs)) * (2 * Math.PI) );
+
+	// Make the sinus oscillate through 0 to 1, in stead of -1 to 1
+	value = 0.5 * value + 0.5;
+	value = times * value + add;
+
+	if(value < 0) {
+		console.warn('fn clipping');
+		value = 0;
+	}
+	if(value > 1) {
+		console.warn('fn clipping');
+		value = 1;
+	}
 };
 
 /**
