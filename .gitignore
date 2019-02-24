@@ -2,3 +2,7 @@
 node_modules
 package-lock.json
 junk
+
+songs
+!songs/myFirstSong.js
+!songs/mySecondSong.js
