@@ -25,16 +25,19 @@ reason for this is that stream handlers communicate to each other. You don't wan
 
 Dependencies:
 
-- Linux
+- Linux/Mac/Windows*
 - Node 11.9 or higher
 - [node-midi](https://github.com/justinlatimer/node-midi) / [RtMidi](https://github.com/thestk/rtmidi)
+
+* In the post install script the command `ln` is used for the creation of a symbolic link to the modules folder. This is 
+a specific linux cmd and will not work on windows. Create a link in the `node_modules` folder named `@giantleap` and 
+point it to the `modules` folder.
 
 ```
 $ git clone git@github.com:t638403/giantleap.git
 $ cd giantleap
 $ npm install
 ```
-A symlink `@giantleap` is created in `node_modules`, so the modules from this project can be referenced this way.
 
 Open `myFirstSong.js` in an editor.
 
