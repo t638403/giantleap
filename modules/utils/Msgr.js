@@ -51,18 +51,30 @@ const ctrl = (channelNr, ctrl, value) => {
 };
 
 const parse = (a) => {
-
-	let type;
 	if(a[0] >= parseInt('0xB0', 16) && a[0] < parseInt('0xB0', 16) + 16) {
-		type = 'ctrl'
+		return {
+			type:'ctrl',
+			channel: a[0] - parseInt('0xB0', 16) + 1,
+			ctrl:a[1],
+			value:a[2]
+		};
+	} else if(a[0] >= 144 && a[0] < 144 + 16) {
+		return {
+			type:'noteon',
+			channel: a[0] - 144 + 1,
+			note:a[1],
+			velocity:a[2]
+		}
+	} else if(a[0] >= 128 && a[0] < 128 + 16) {
+		return {
+			type:'noteoff',
+			channel: a[0] - 128 + 1,
+			note:a[1],
+			velocity:a[2]
+		}
+	}else {
+		throw 'Could not determine midi msg type';
 	}
-
-	return {
-		type,
-		channel:a[0] - parseInt('0xB0', 16) + 1,
-		ctrl:a[1],
-		value:a[2]
-	};
 };
 
 /**
