@@ -8,10 +8,13 @@ const Metronome = require('@giantleap/Metronome'),
 	Nrpn        = require('@giantleap/Nrpn'),
 	Value       = require('@giantleap/Value'),
 
+	CtrlIn      = require('@giantleap/CtrlIn'),
+
 	Clock       = require('@giantleap/Clock'),
 	Device      = require('@giantleap/Device'),
 	Instrument  = require('@giantleap/Instrument'),
 	Electribe   = require('@giantleap/Electribe'),
+	Uc33        = require('@giantleap/Uc33'),
 
 	Stitch      = require('@giantleap/Stitch'),
 	MidiMsgr    = require('@giantleap/MidiMsgr'),
@@ -27,13 +30,14 @@ const ensoniq1   = () => new Instrument(/MIDIMATE II \d+:0/, 1);
 const ensoniq2   = () => new Instrument(/MIDIMATE II \d+:0/, 2);
 const ensoniq3   = () => new Instrument(/MIDIMATE II \d+:0/, 3);
 
-const evolver   = () => new Instrument(/MIDIMATE II \d+:1/, 2);
-const electribe = () => new Electribe (/MIDIMATE II \d+:1/, 2);
-const yamaha    = () => new Instrument(/MIDIMATE II \d+:1/, 3);
+const electribe  = () => new Electribe (/MIDIMATE II \d+:1/, 2);
+const yamaha     = () => new Instrument(/MIDIMATE II \d+:1/, 3);
 
-const arp       = () => new Instrument(/ARPODYSSEY-FS \d+:0/, 1);
-const doepfer   = () => new Instrument(/USB Device 0x7cd:0xfe06 \d+:0/, 1);
-const smplv1   = () => new Instrument(/samplv1 \d+:0/, 1);
+const arp        = () => new Instrument(/ARPODYSSEY-FS \d+:0/, 1);
+const doepfer    = () => new Instrument(/USB Device 0x7cd:0xfe06 \d+:0/, 1);
+const smplv1     = () => new Instrument(/samplv1 \d+:0/, 1);
+
+const uc33       = () => new Uc33(/UC-33 USB MIDI Controller \d+:0/);
 
 /**
  * Get midi clocks for all connected devices
@@ -77,8 +81,8 @@ const streams = [
 		.pipe(electribe()),
 
 	m120()
-		.pipe(new Nrpn(Electribe.nrpn('S1', 'Pitch')))
-		.pipe(new Value(Value.block(bpm, 1/8)))
+		.pipe(new CtrlIn(uc33(), Uc33.C10))
+		.pipe(new Nrpn(Electribe.nrpn('S1', 'Decay')))
 		.pipe(electribe()),
 
 ];

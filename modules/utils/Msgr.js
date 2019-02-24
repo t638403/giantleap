@@ -50,6 +50,12 @@ const ctrl = (channelNr, ctrl, value) => {
 	return [Bn, ctrl, value];
 };
 
+const ctrlParse = (a) => ({
+	channel:a[0] - parseInt('0xB0', 16) + 1,
+	ctrl:a[1],
+	value:a[2]
+});
+
 /**
  * Send an NRPN (non registered param number). For electribe, dm is the value of the param.
  *
@@ -191,6 +197,7 @@ module.exports = {
 	noteOn,
 	noteOff,
 	ctrl,
+	ctrlParse,
 	nrpn,
 	programChange,
 	bankSelectMsb,
