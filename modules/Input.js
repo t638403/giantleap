@@ -4,12 +4,26 @@ const midi = require('midi');
 class Input extends Transform {
 	constructor(instrument, {type, channel, nr}) {
 		super({objectMode:true});
-		this.input = {
-			type,
-			device:instrument.deviceNo,
-			channel,
-			nr
-		};
+		type = type || 'note';
+
+		switch (type) {
+			case 'ctrl':
+				this.input = {
+					type,
+					device:instrument.deviceNo,
+					channel,
+					nr
+				};
+				break;
+			case 'note':
+				this.input = {
+					type,
+					device:instrument.deviceNo,
+					channel:instrument.midiChannel
+				};
+				break;
+		}
+
 	}
 
 	_transform(partialMidiMsg, _enc, next) {
