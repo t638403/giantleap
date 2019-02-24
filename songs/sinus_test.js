@@ -8,7 +8,7 @@ const Metronome = require('@giantleap/Metronome'),
 	Nrpn        = require('@giantleap/Nrpn'),
 	Value       = require('@giantleap/Value'),
 
-	CtrlIn      = require('@giantleap/CtrlIn'),
+	Input      = require('@giantleap/Input'),
 
 	Clock       = require('@giantleap/Clock'),
 	Device      = require('@giantleap/Device'),
@@ -81,8 +81,8 @@ const streams = [
 		.pipe(electribe()),
 
 	m120()
-		.pipe(new CtrlIn(uc33(), Uc33.C10))
-		.pipe(new Nrpn(Electribe.nrpn('S1', 'Decay')))
+		.pipe(new Input(uc33(), Uc33.C10))
+		.pipe(new Nrpn(Electribe.nrpn('S1', 'Pitch')))
 		.pipe(electribe()),
 
 ];

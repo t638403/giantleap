@@ -66,8 +66,8 @@ class MidiMsgr extends Transform {
 						t: msg.t,
 						msg:midiMsg
 					};
-					if(i===2 && msg.ctrlIn) {
-						thisMsg.ctrlIn = msg.ctrlIn;
+					if(i===2 && msg.input && msg.input.type === 'ctrl') {
+						thisMsg.input = msg.input;
 					}
 					this.push(thisMsg);
 					i++;
@@ -79,8 +79,8 @@ class MidiMsgr extends Transform {
 					t: msg.t,
 					msg:ctrl(msg.channel, msg.ctrl, msg.value)
 				};
-				if(msg.ctrlIn) {
-					thisMsg.ctrlIn = msg.ctrlIn;
+				if(msg.input && msg.input.type === 'ctrl') {
+					thisMsg.input = msg.input;
 				}
 				this.push(thisMsg);
 				break;

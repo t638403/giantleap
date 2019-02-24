@@ -1,11 +1,11 @@
 const { Transform } = require('stream');
 const midi = require('midi');
 
-class CtrlIn extends Transform {
-	constructor(instrument, {channel, nr}) {
+class Input extends Transform {
+	constructor(instrument, {type, channel, nr}) {
 		super({objectMode:true});
-		this.ctrlIn = {
-			type:'ctrl',
+		this.input = {
+			type,
 			device:instrument.deviceNo,
 			channel,
 			nr
@@ -13,7 +13,7 @@ class CtrlIn extends Transform {
 	}
 
 	_transform(partialMidiMsg, _enc, next) {
-		this.push(Object.assign({}, partialMidiMsg, {ctrlIn:this.ctrlIn}));
+		this.push(Object.assign({}, partialMidiMsg, {input:this.input}));
 		next();
 	}
 
@@ -22,4 +22,4 @@ class CtrlIn extends Transform {
 	}
 }
 
-module.exports = CtrlIn;
+module.exports = Input;

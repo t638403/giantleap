@@ -35,8 +35,8 @@ class MidiOut extends Writable {
 
 			if(this.curr && this.curr.t <= now) {
 
-				if(this.curr.ctrlIn) {
-					this.curr.msg[2] = this.inValues[this.inKey('ctrl', this.curr.ctrlIn.device, this.curr.ctrlIn.channel, this.curr.ctrlIn.nr)];
+				if(this.curr.input) {
+					this.curr.msg[2] = this.inValues[this.inKey(this.curr.input.type, this.curr.input.device, this.curr.input.channel, this.curr.input.nr)];
 				}
 
 				const diff = now - this.curr.t;
@@ -53,7 +53,7 @@ class MidiOut extends Writable {
 		}, 0);
 	}
 
-	inKey(type = 'ctrl', deviceNo, channelNo, ctrlNo) {
+	inKey(type, deviceNo, channelNo, ctrlNo) {
 		return `${type}:${deviceNo}:${channelNo}:${ctrlNo}`;
 	}
 
@@ -73,13 +73,13 @@ class MidiOut extends Writable {
 
 		}
 		// Check if midi device was available, and if not make it available
-		if(outMsg.ctrlIn && !this.ins[outMsg.ctrlIn.device]) {
-			this.ins[outMsg.ctrlIn.device] = new midi.input();
-			this.ins[outMsg.ctrlIn.device].openPort(outMsg.ctrlIn.device);
-			this.inValues[this.inKey('ctrl', outMsg.ctrlIn.device, outMsg.ctrlIn.channel, outMsg.ctrlIn.nr)] = 64;
-			this.ins[outMsg.ctrlIn.device].on('message', (_d, inMsg) => {
-				const { channel, ctrl, value } = Msgr.ctrlParse(inMsg);
-				this.inValues[this.inKey('ctrl', outMsg.ctrlIn.device, channel, ctrl)] = value;
+		if(outMsg.input && !this.ins[outMsg.input.device]) {
+			this.ins[outMsg.input.device] = new midi.input();
+			this.ins[outMsg.input.device].openPort(outMsg.input.device);
+			this.inValues[this.inKey(outMsg.input.type, outMsg.input.device, outMsg.input.channel, outMsg.input.nr)] = 64;
+			this.ins[outMsg.input.device].on('message', (_d, inMsg) => {
+				const { type, channel, ctrl, value } = Msgr.parse(inMsg);
+				this.inValues[this.inKey(type, outMsg.input.device, channel, ctrl)] = value;
 			});
 		}
 
