@@ -34,12 +34,43 @@ class Value extends Transform {
 }
 
 /**
- * Create a function that can create either a cosinus or a sinus or any other trigonometric fn
+ * These trigonometric functions oscilate between 0 and 1, in stead of -1 and 1.
+ *
+ * @param x
+ * @returns {number}
+ */
+const sine   = (x) => 0.5 * Math.sin(x) + 0.5;
+const cosine = (x) => 0.5 * Math.cos(x) + 0.5;
+const ramp   = (x) => ((x % (2 * Math.PI)) / (2 * Math.PI));
+const slope  = (x) => 1 - ramp(x);
+const saw    = (x) => (ramp(x) < 0.5 ? ramp(x) : slope(x)) * 2;
+const block  = (x) => (ramp(x) < 0.5 ? 1 : 0);
+
+/**
+ * Protect a value when it goes out of bounds
+ *
+ * @param value
+ */
+const protect = (value) => {
+	if(value < 0) {
+		console.warn('fn clipping');
+		value = 0;
+	}
+	if(value > 1) {
+		console.warn('fn clipping');
+		value = 1;
+	}
+	return value;
+};
+
+/**
+ * Create a trigonometric function that is synchronized to the bpm by supplying a trigonometric function that is not
+ * synchronized to the bpm. A trigonometric function must oscilate between 0 and 1.
  *
  * @param trigonometricFn
  * @returns {function(*=, *=): function(*)}
  */
-const createSynchronizedTrigonometricFunction = (trigonometricFn = Math.sin) => (bpm, factor = 0.5, times = 1, add = 0) => t => {
+const createSynchronizedTrigonometricFunction = (trigonometricFn = sine) => (bpm, factor = 0.5, times = 1, add = 0) => t => {
 	let cycleInNs;
 	if(factor < 1) {
 		cycleInNs = ((60n * 1000000000n) / BigInt(bpm)) * BigInt(1 / factor);
@@ -50,38 +81,20 @@ const createSynchronizedTrigonometricFunction = (trigonometricFn = Math.sin) => 
 	t = Number(t - nrOfCycles * cycleInNs);
 	let value = trigonometricFn( (t / Number(cycleInNs)) * (2 * Math.PI) );
 
-	// Make the sinus oscillate through 0 to 1, in stead of -1 to 1
-	value = 0.5 * value + 0.5;
 	value = times * value + add;
 
-	if(value < 0) {
-		console.warn('fn clipping');
-		value = 0;
-	}
-	if(value > 1) {
-		console.warn('fn clipping');
-		value = 1;
-	}
-
-	return value;
+	return protect(value);
 };
 
-/**
- * Create a sine function that is synchronized to a bpm.
- *
- * @param bpm
- * @param factor
- * @returns {function(*)}
- */
-Value.createSynchronizedSine = createSynchronizedTrigonometricFunction(Math.sin);
 
 /**
- * Create a cosine function that is synchronized to a bpm.
- *
- * @param bpm
- * @param factor
- * @returns {function(*)}
+ * Synchronized versions of the trigonometric functions.
  */
-Value.createSynchronizedCosine = createSynchronizedTrigonometricFunction(Math.cos);
+Value.sine   = createSynchronizedTrigonometricFunction(sine);
+Value.cosine = createSynchronizedTrigonometricFunction(cosine);
+Value.ramp   = createSynchronizedTrigonometricFunction(ramp);
+Value.slope  = createSynchronizedTrigonometricFunction(slope);
+Value.saw    = createSynchronizedTrigonometricFunction(saw);
+Value.block  = createSynchronizedTrigonometricFunction(block);
 
 module.exports = Value;
