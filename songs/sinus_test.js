@@ -36,8 +36,11 @@ const yamaha     = () => new Instrument(/MIDIMATE II \d+:1/, 3);
 const arp        = () => new Instrument(/ARPODYSSEY-FS \d+:0/, 1);
 const doepfer    = () => new Instrument(/USB Device 0x7cd:0xfe06 \d+:0/, 1);
 const smplv1     = () => new Instrument(/samplv1 \d+:0/, 1);
+const synthv1    = () => new Instrument(/synthv1 \d+:0/, 1);
 
+// Input devices
 const uc33       = () => new Uc33(/UC-33 USB MIDI Controller \d+:0/);
+const akai       = () => new Instrument(/Akai MPK25 \d+:1/, 1);
 
 /**
  * Get midi clocks for all connected devices
@@ -84,6 +87,10 @@ const streams = [
 		.pipe(new Input(uc33(), Uc33.C10))
 		.pipe(new Nrpn(Electribe.nrpn('S1', 'Pitch')))
 		.pipe(electribe()),
+
+	m120()
+		.pipe(new Input(akai()))
+		.pipe(synthv1()),
 
 ];
 
