@@ -2,24 +2,24 @@ const { Transform } = require('stream');
 const midi = require('midi');
 
 class Input extends Transform {
-	constructor(instrument, {type, channel, nr}) {
+	constructor(instrument, msg = {}) {
 		super({objectMode:true});
-		type = type || 'note';
+		const type = msg.type || 'note';
 
 		switch (type) {
 			case 'ctrl':
 				this.input = {
 					type,
-					device:instrument.deviceNo,
-					channel,
-					nr
+					device:  instrument.deviceNo,
+					channel: msg.channel,
+					nr:      msg.nr
 				};
 				break;
 			case 'note':
 				this.input = {
 					type,
-					device:instrument.deviceNo,
-					channel:instrument.midiChannel
+					device:  instrument.deviceNo,
+					channel: instrument.midiChannel
 				};
 				break;
 		}
