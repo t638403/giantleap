@@ -3,7 +3,6 @@ const Metronome = require('@giantleap/Metronome'),
 
 	Note        = require('@giantleap/Note'),
 	Chord       = require('@giantleap/Chord'),
-	Velocity    = require('@giantleap/Velocity'),
 
 	Ctrl        = require('@giantleap/Ctrl'),
 	Nrpn        = require('@giantleap/Nrpn'),
@@ -49,8 +48,17 @@ const getMidiClocks = (bpm) => Object
 	)
 ;
 
+const randSelect = (l, values) => {
+	const selection = [];
+	for(let i = 0; i < l; i++) {
+		selection.push(values[Math.floor(Math.random() * values.length)]);
+	}
+	console.log(`[${selection.map(v => `'${v}'`).join(',')}]`);
+	return selection;
+};
+
 // CLOCK ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-const bpm = 120;
+const bpm = 140;
 const m120 = () => new Metronome(bpm, 4, 0.3);
 const m80 = () => new Metronome(80, 4);
 const m120_n = (n) => new Metronome(bpm, n);
@@ -62,10 +70,69 @@ const streams = [
 
 	m120()
 		.pipe(new Pattern([
-			'x..x..x...x..x......x..x..x.x...',
-			'x..x..x...x..x.xx...x..x..x.x...',
-			'x..x..x...x..x......x..x..x.x.x.',
-			'x..x..x...x..x....xxx..x..x.x...',
+			'x.....x...x..x..',
+		]))
+		.pipe(new Note([
+			Electribe.S3
+		]))
+		.pipe(electribe()),
+
+	m120()
+		.pipe(new Pattern([
+			'....x...',
+		]))
+		.pipe(new Note([
+			Electribe.S2
+		]))
+		.pipe(electribe()),
+
+	m120()
+		.pipe(new Pattern([
+			'.......xx.....x.',
+			'................',
+			'.....xx......x..',
+			'................',
+			'.xx...x..xx.....',
+			'................'
+		]))
+		.pipe(new Note([
+			Electribe.CLAP
+		]))
+		.pipe(electribe()),
+
+	m120()
+		.pipe(new Pattern([
+			'..x.x...x.....x.x.x..x...x......',
+			'...x..x.....x..x..x.....x..x....'
+		]))
+		.pipe(new Note('A#3'))
+		.pipe(ensoniq1()),
+
+	m120()
+		.pipe(new Pattern([
+			'x',
+		]))
+		.pipe(new Note([
+			Electribe.HH_OPEN
+		]))
+		.pipe(electribe()),
+
+	m120()
+		.pipe(new Pattern([
+			'x',
+		]))
+		.pipe(new Nrpn(Electribe.nrpn('HH OPEN', 'Decay')))
+		.pipe(new Value([
+			 0, 0,10, 0, 0, 0, 0, 5,
+			 0, 1, 1, 3, 3, 2, 3, 5,
+			 0, 0,10, 0, 0, 0, 5, 5,
+			 3, 1, 1, 2, 0,20, 0, 0,
+		]))
+		.pipe(electribe()),
+
+	m120()
+		.pipe(new Pattern([
+			'..xx',
 		]))
 		.pipe(new Note([
 			Electribe.S1
@@ -73,86 +140,32 @@ const streams = [
 		.pipe(electribe()),
 
 	m120()
-		.pipe(new Pattern('xxxxxxxx'))
+		.pipe(new Pattern([
+			'..x.',
+		]))
 		.pipe(new Note([
-			Electribe.HH_OPEN,
-			Electribe.HH_CLOSE,
-			Electribe.HH_OPEN,
-			Electribe.HH_CLOSE,
-			Electribe.HH_OPEN,
-			Electribe.HH_CLOSE,
-			Electribe.HH_OPEN,
-			Electribe.HH_CLOSE,
+			Electribe.S4
 		]))
-		.pipe(electribe()),
-
-	m120()
-		.pipe(new Nrpn(Electribe.nrpn('HH OPEN', 'Decay')))
-		.pipe(new Value([
-			5,1,2,3,3,4,2,2,
-			2,1,7,1,2,1,1,0,
-			5,1,2,3,10,10,20,20,
-			2,1,30,1,2,1,1,0,
-			5,1,2,3,3,4,2,2,
-			2,1,7,1,2,1,1,0,
-			5,1,2,3,6,3,0,20,
-			20,10,7,1,2,1,1,0,
-			5,1,2,3,3,4,2,2,
-			2,1,7,50,2,1,1,0,
-			5,1,2,3,10,10,20,20,
-			2,1,30,1,2,1,1,0,
-			5,1,2,3,3,4,2,2,
-			2,1,7,1,2,1,1,0,
-			5,20,2,3,6,3,0,20,
-			12,10,7,1,90,1,1,0,
-		]))
-		.pipe(electribe()),
-
-	m120()
-		.pipe(new Pattern('..x..x.x..x..x.x..x..x.x..x..x..'))
-		.pipe(new Note(Electribe.CLAP))
 		.pipe(electribe()),
 
 	m120()
 		.pipe(new Pattern([
-			'..x..x.x..x..x.x..x..x.x..x.x.x...x.'
+			'x===..x==.x=.x=.x=.x==x==.x==x=.',
 		]))
-		.pipe(new Note('C3'))
+		.pipe(new Note([
+			'D#2','D#2','D#2','D#2',
+			'G2','G2','F#2','F#2','F#2',
+		], 2))
 		.pipe(arp()),
 
 	m120()
 		.pipe(new Pattern([
-			'....x.......x....x.......x..x.......x....x..x....x..x..x.x..x...'
+			'x=xxxx.x.x.xx==.x.x=x.x=xx=xx.xx',
+			'x.x=.x=x===x.x=x=x.xxxx.x.x.x=x='
 		]))
-		.pipe(new Velocity('1'))
-		.pipe(new Note('C7'))
-		.pipe(ensoniq1()),
+		.pipe(new Note(['B4','F#1','F#4','D4','D#2','G#2','C1','G#1','G#1','D2','F#2','G1','C1','F1','C4','F#4','D3','F2','G2','B3','G#3','F#3','F2','G#3','D#2'], 3))
+		.pipe(yamaha()),
 
-	m120()
-		.pipe(new Pattern([
-			'..x.'
-		]))
-		.pipe(new Velocity('1'))
-		.pipe(new Note('A#3'))
-		.pipe(ensoniq1()),
-
-	m120()
-		.pipe(new Pattern([
-			'x...'
-		]))
-		.pipe(new Velocity('9'))
-		.pipe(new Note('C2'))
-		.pipe(ensoniq2()),
-
-	m120()
-		.pipe(new Pattern([
-			'.x.x.x.xx.x...x.'
-		]))
-		.pipe(new Chord([
-			['E4', 'F#4', 'G#4', 'A4'],
-			['E4', 'F#4', 'G#4', 'A4']
-		], 1))
-		.pipe(yamaha())
 ];
 
 /**

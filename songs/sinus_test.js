@@ -3,7 +3,6 @@ const Metronome = require('@giantleap/Metronome'),
 
 	Note        = require('@giantleap/Note'),
 	Chord       = require('@giantleap/Chord'),
-	Velocity    = require('@giantleap/Velocity'),
 
 	Ctrl        = require('@giantleap/Ctrl'),
 	Nrpn        = require('@giantleap/Nrpn'),
@@ -50,14 +49,6 @@ const getMidiClocks = (bpm) => Object
 	)
 ;
 
-const mySin = (bpm, factor = 1) => ns => {
-	const cycleInNs = (60n * 1000000000n) / BigInt(bpm);
-	const nrOfCycles = BigInt(Math.floor(Number(ns / cycleInNs)));
-	const tInNs = Number(ns - nrOfCycles * cycleInNs);
-	const actual = 0.5 * Math.sin( (tInNs * factor * 2 * Math.PI / Number(cycleInNs)) ) + 0.5;
-	return Math.round(actual * 100) / 100;
-};
-
 const randSelect = (l, values) => {
 	const selection = [];
 	for(let i = 0; i < l; i++) {
@@ -87,12 +78,10 @@ const streams = [
 
 	m120()
 		.pipe(new Nrpn(Electribe.nrpn('S1', 'Pitch')))
-		.pipe(new Value(mySin(bpm, 1/8)))
+		.pipe(new Value(Value.block(bpm, 1/8)))
 		.pipe(electribe()),
 
 ];
-
-
 
 /**
  * All streams get stitched together here into one single (transform) stream and then sent to the MidiMsgr which in turn
