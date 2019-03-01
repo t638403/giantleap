@@ -39,6 +39,7 @@ class Value extends Transform {
  * @param x
  * @returns {number}
  */
+const rand   = (x) => 0.5 * Math.random() + 0.5;
 const sine   = (x) => 0.5 * Math.sin(x) + 0.5;
 const cosine = (x) => 0.5 * Math.cos(x) + 0.5;
 const ramp   = (x) => ((x % (2 * Math.PI)) / (2 * Math.PI));
@@ -96,5 +97,6 @@ Value.ramp   = createSynchronizedTrigonometricFunction(ramp);
 Value.slope  = createSynchronizedTrigonometricFunction(slope);
 Value.saw    = createSynchronizedTrigonometricFunction(saw);
 Value.block  = createSynchronizedTrigonometricFunction(block);
+Value.rand  = createSynchronizedTrigonometricFunction(rand);
 
 module.exports = Value;
