@@ -59,33 +59,23 @@ class MidiMsgr extends Transform {
 				break;
 			case 'nrpn':
 				const midiMsgs = nrpn(msg.channel, msg.nm, msg.nl, msg.value, msg.dl);
-				let i=0;
 				for(const midiMsg of midiMsgs) {
-					const thisMsg = {
+					this.push({
 						device: msg.device,
 						t: msg.t,
 						msg:midiMsg
-					};
-					if(i===2 && msg.input && msg.input.type === 'ctrl') {
-						thisMsg.input = msg.input;
-					}
-					this.push(thisMsg);
-					i++;
+					});
 				}
 				break;
 			case 'ctrl':
-				const thisMsg = {
+				this.push({
 					device: msg.device,
 					t: msg.t,
 					msg:ctrl(msg.channel, msg.ctrl, msg.value)
-				};
-				if(msg.input && msg.input.type === 'ctrl') {
-					thisMsg.input = msg.input;
-				}
-				this.push(thisMsg);
+				});
 				break;
 			default:
-				// do stuff one day
+			// do stuff one day
 		}
 		next();
 	}

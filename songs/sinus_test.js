@@ -84,7 +84,7 @@ const streams = [
 		.pipe(electribe()),
 
 	m120()
-		.pipe(new Input(uc33(), Uc33.C10))
+		.pipe(new Value(Value.sine(bpm, 1/16, 1/8, 1/2)))
 		.pipe(new Nrpn(Electribe.nrpn('S1', 'Pitch')))
 		.pipe(electribe()),
 

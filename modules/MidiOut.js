@@ -16,10 +16,8 @@ class MidiOut extends Writable {
 		MidiOut.displayAvailablePorts();
 		this.ports = invert(MidiOut.availablePorts());
 
-		// These will be filled when msgs come along in _transform
+		// This will be filled when msgs come along in _transform
 		this.outs = [];
-		this.ins = [];
-		this.inValues = {};
 
 		this.curr = null;
 		this.i = null;
@@ -35,10 +33,6 @@ class MidiOut extends Writable {
 
 			if(this.curr && this.curr.t <= now) {
 
-				if(this.curr.input) {
-					this.curr.msg[2] = this.inValues[this.inKey(this.curr.input.type, this.curr.input.device, this.curr.input.channel, this.curr.input.nr)];
-				}
-
 				const diff = now - this.curr.t;
 				const logMsg = `${now / 1000000000n}: ${this.curr.t} Diff: ${Math.round(Number(diff / 10000000n)) / 100}, Msg: ${this.curr.msg}`;
 				// Check if port is available, e.g. physical instrument is switched on
@@ -53,40 +47,26 @@ class MidiOut extends Writable {
 		}, 0);
 	}
 
-	inKey(type, deviceNo, channelNo, ctrlNo) {
-		return `${type}:${deviceNo}:${channelNo}:${ctrlNo}`;
-	}
-
-	_write(outMsg, _enc, next) {
+	_write(msg, _enc, next) {
 
 		if(!this.i) this.i = this.play();
 
 		// Check if midi device was available, and if not make it available
-		if(!this.outs[outMsg.device] && outMsg.device in this.ports) {
-			this.outs[outMsg.device] = new midi.output();
-			this.outs[outMsg.device].openPort(outMsg.device);
+		if(!this.outs[msg.device] && msg.device in this.ports) {
+			this.outs[msg.device] = new midi.output();
+			this.outs[msg.device].openPort(msg.device);
 
-			console.log(`All notes of...`);
 			for(let channel=1; channel <=16; channel++) {
-				this.outs[outMsg.device].sendMessage(Msgr.allNotesOff(channel));
+				console.log(`All notes of: ${msg.device}/${channel}`);
+				this.outs[msg.device].sendMessage(Msgr.allNotesOff(channel));
 			}
 
-		}
-		// Check if midi device was available, and if not make it available
-		if(outMsg.input && !this.ins[outMsg.input.device]) {
-			this.ins[outMsg.input.device] = new midi.input();
-			this.ins[outMsg.input.device].openPort(outMsg.input.device);
-			this.inValues[this.inKey(outMsg.input.type, outMsg.input.device, outMsg.input.channel, outMsg.input.nr)] = 64;
-			this.ins[outMsg.input.device].on('message', (_d, inMsg) => {
-				const { type, channel, ctrl, value } = Msgr.parse(inMsg);
-				this.inValues[this.inKey(type, outMsg.input.device, channel, ctrl)] = value;
-			});
 		}
 
 		// This message will be picked up by the setInterval callback. The next function is attached to the message so
 		// the interval callback can inform the stream when it is ready to receive new messages.
-		outMsg.next = next;
-		this.curr = outMsg;
+		msg.next = next;
+		this.curr = msg;
 
 	}
 
