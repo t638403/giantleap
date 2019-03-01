@@ -8,8 +8,6 @@ const Metronome = require('@giantleap/Metronome'),
 	Nrpn        = require('@giantleap/Nrpn'),
 	Value       = require('@giantleap/Value'),
 
-	Input      = require('@giantleap/Input'),
-
 	Clock       = require('@giantleap/Clock'),
 	Device      = require('@giantleap/Device'),
 	Instrument  = require('@giantleap/Instrument'),
