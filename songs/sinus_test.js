@@ -86,10 +86,6 @@ const streams = [
 		.pipe(new Nrpn(Electribe.nrpn('S1', 'Pitch')))
 		.pipe(electribe()),
 
-	m120()
-		.pipe(new Input(akai()))
-		.pipe(synthv1()),
-
 ];
 
 /**
