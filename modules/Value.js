@@ -71,16 +71,19 @@ const protect = (value) => {
  * @param trigonometricFn
  * @returns {function(*=, *=): function(*)}
  */
-const createSynchronizedTrigonometricFunction = (trigonometricFn = sine) => (bpm, factor = 0.5, times = 1, add = 0) => t => {
-	let cycleInNs;
+const createSynchronizedTrigonometricFunction = (trigonometricFn = sine) => (bpm, factor = 0.5, fnTimes = 1, fnAdd = 0) => $t => {
+	let $cycleInNs;
 	if(factor < 1) {
-		cycleInNs = ((60n * 1000000000n) / BigInt(bpm)) * BigInt(1 / factor);
+		$cycleInNs = ((60n * 1000000000n) / BigInt(bpm)) * BigInt(1 / factor);
 	} else {
-		cycleInNs = ((60n * 1000000000n) / BigInt(bpm)) / BigInt(factor);
+		$cycleInNs = ((60n * 1000000000n) / BigInt(bpm)) / BigInt(factor);
 	}
-	const nrOfCycles = t / cycleInNs;
-	t = Number(t - nrOfCycles * cycleInNs);
-	let value = trigonometricFn( (t / Number(cycleInNs)) * (2 * Math.PI) );
+	const $nrOfCycles = $t / $cycleInNs;
+	const t = Number($t - $nrOfCycles * $cycleInNs);
+	let value = trigonometricFn( (t / Number($cycleInNs)) * (2 * Math.PI) );
+
+	let times = typeof fnTimes === 'function' ? fnTimes($t) : fnTimes;
+	let add = typeof fnAdd === 'function' ? fnAdd($t) : fnAdd;
 
 	value = times * value + add;
 
