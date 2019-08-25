@@ -14,12 +14,16 @@ class Value extends Transform {
 				this.cb = cbOrValues;
 				break;
 			case 'string':
-				const values = cbOrValues.split('').map(value => parseInt(value, 10) * 0.1);
+				const values = cbOrValues
+					.split('')
+
+					// converts hexadecimal notation to a value between 0 (inclusive) and 127 (inclusive)
+					.map( v => Math.floor( (parseInt(v, 16) / 16 ) * ( 128 + 8) ) );
 				this.ringBuf = RingBuffer(values);
 		}
 
 		if(isArray(cbOrValues)) {
-			this.ringBuf = RingBuffer(cbOrValues.map(v => v / 127));
+			this.ringBuf = RingBuffer(cbOrValues.map(v => v * 128));
 		}
 	}
 
@@ -71,24 +75,30 @@ const protect = (value) => {
  * @param trigonometricFn
  * @returns {function(*=, *=): function(*)}
  */
-const createSynchronizedTrigonometricFunction = (trigonometricFn = sine) => (bpm, factor = 0.5, fnTimes = 1, fnAdd = 0) => $t => {
-	let $cycleInNs;
-	if(factor < 1) {
-		$cycleInNs = ((60n * 1000000000n) / BigInt(bpm)) * BigInt(1 / factor);
-	} else {
-		$cycleInNs = ((60n * 1000000000n) / BigInt(bpm)) / BigInt(factor);
-	}
-	const $nrOfCycles = $t / $cycleInNs;
-	const t = Number($t - $nrOfCycles * $cycleInNs);
-	let value = trigonometricFn( (t / Number($cycleInNs)) * (2 * Math.PI) );
+const createSynchronizedTrigonometricFunction = (trigonometricFn = sine) =>
 
-	let times = typeof fnTimes === 'function' ? fnTimes($t) : fnTimes;
-	let add = typeof fnAdd === 'function' ? fnAdd($t) : fnAdd;
+	// factor : How many times, for example the sine wave, will repeat it self per beat
+	// fnTimes: Multiply the amplitude of the sine
+	// fnAdd  : Add/subtract from
+	(bpm, factor = 0.5, fnTimes = 1, fnAdd = 0) =>
+			$t => {
+				let $cycleInNs;
+				if(factor < 1) {
+					$cycleInNs = ((60n * 1000000000n) / BigInt(bpm)) * BigInt(1 / factor);
+				} else {
+					$cycleInNs = ((60n * 1000000000n) / BigInt(bpm)) / BigInt(factor);
+				}
+				const $nrOfCycles = $t / $cycleInNs;
+				const t = Number($t - $nrOfCycles * $cycleInNs);
+				let value = trigonometricFn( (t / Number($cycleInNs)) * (2 * Math.PI) );
 
-	value = times * value + add;
+				let times = typeof fnTimes === 'function' ? fnTimes($t) : fnTimes;
+				let add = typeof fnAdd === 'function' ? fnAdd($t) : fnAdd;
 
-	return protect(value);
-};
+				value = times * value + add;
+
+				return protect(value);
+			};
 
 
 /**
