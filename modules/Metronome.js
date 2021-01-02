@@ -6,9 +6,9 @@ class Metronome extends Readable {
 	 * Create a metronome and specify for example quarter notes
 	 *
 	 * @param bpm {number} Beats per minute
-	 * @param ticksPerBeat {times} Note type, for example 4 for quarter notes
-	 * @param swing {number} Percentage of swing, for example 0.5 for 50% swing on every other note
-	 * @param offset {integer} schedule al notes a little later
+	 * @param ticksPerBeat {int} Note type, for example 4 for quarter notes
+	 * @param swing {float} Percentage of swing, for example 0.5 for 50% swing on every other note
+	 * @param offset {int} schedule al notes a little later
 	 */
 	constructor(bpm, ticksPerBeat, swing = 0, offset = 0n) {
 		super({objectMode:true});

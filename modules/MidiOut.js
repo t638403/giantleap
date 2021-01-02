@@ -57,7 +57,7 @@ class MidiOut extends Writable {
 			this.outs[msg.device].openPort(msg.device);
 
 			for(let channel=1; channel <=16; channel++) {
-				console.log(`All notes of: ${msg.device}/${channel}`);
+				// console.log(`All notes of: ${msg.device}/${channel}`);
 				this.outs[msg.device].sendMessage(Msgr.allNotesOff(channel));
 			}
 

@@ -2,6 +2,22 @@ const { Transform } = require('stream');
 const RingBuffer = require('@giantleap/utils/RingBuffer');
 const isArray = require('@giantleap/utils/underdash/isArray');
 
+/**
+ * Value - Either a string of hex values or a function generating values
+ *
+ * Example, :
+ * const bpm = 120;
+ * const cyclesPerBeat = 1/32; // one cycle in 32 beats
+ * const ampWidth = 0.2        // e.g. times
+ * const ampOffset = 0.2       // e.g. add
+ *
+ * m120()
+ *    .pipe(new Value(Value.sine(bpm, cyclesPerBeat, ampWidth, ampOffset)))
+ *    .pipe(new Nrpn(Electribe.nrpn('S2', 'Pitch')))
+ *    .pipe(new SampleRepeat(32))
+ *    .pipe(electribe())
+ *
+ */
 class Value extends Transform {
 	constructor(cbOrValues = Math.random) {
 		super({objectMode:true});
@@ -18,7 +34,8 @@ class Value extends Transform {
 					.split('')
 
 					// converts hexadecimal notation to a value between 0 (inclusive) and 127 (inclusive)
-					.map( v => Math.floor( (parseInt(v, 16) / 16 ) * ( 128 + 8) ) );
+					.map( v => Math.floor( (parseInt(v, 16) / 16 ) * ( 128 + 7) ) );
+
 				this.ringBuf = RingBuffer(values);
 		}
 

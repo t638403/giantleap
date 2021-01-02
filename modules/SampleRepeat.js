@@ -3,6 +3,17 @@ const RingBuffer = require('@giantleap/utils/RingBuffer');
 const isArray = require('@giantleap/utils/underdash/isArray');
 const range = require('@giantleap/utils/underdash/range');
 
+/**
+ * SampleRepeat - Record a bunch of values and repeat this record over en over
+ *
+ * Example, sample for 32 beats and repeat:
+ *
+ * m120()
+ *    .pipe(new Value(Value.rand(bpm, 1/32, 0.2, 0.20)))
+ *    .pipe(new Nrpn(Electribe.nrpn('S2', 'Pitch')))
+ *    .pipe(new SampleRepeat(32))
+ *    .pipe(electribe())
+ */
 class SampleRepeat extends Transform {
 
 	constructor(nrOfTicks) {

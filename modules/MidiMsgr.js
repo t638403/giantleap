@@ -4,6 +4,8 @@ const NaivePriorityQueue = require("@giantleap/utils/NaivePriorityQueue");
 const {
 	noteOn,
 	noteOff,
+  start,
+  stop,
 	clock,
 	ctrl,
 	nrpn
@@ -50,6 +52,22 @@ class MidiMsgr extends Transform {
 				});
 
 				break;
+      case 'start':
+        this.pq.add({
+          device: msg.device,
+          t:msg.tEnd,
+          msg:start()
+        });
+        break;
+
+      case 'stop':
+        this.pq.add({
+          device: msg.device,
+          t:msg.tEnd,
+          msg:stop()
+        });
+        break;
+
 			case 'clock':
 				this.push({
 					device: msg.device,

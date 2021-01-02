@@ -1,5 +1,11 @@
 const { Transform } = require('stream');
 
+/**
+ * m120()
+ * 	.pipe(new Value(Value.randPat(bpm)))
+ * 	.pipe(new Ctrl(21))
+ * 	.pipe(doepfer())
+ */
 class Ctrl extends Transform {
 	constructor(ctrlNr) {
 		super({objectMode:true});

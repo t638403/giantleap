@@ -1,7 +1,17 @@
 const { Transform } = require('stream');
 const RingBuffer    = require('@giantleap/utils/RingBuffer');
 
-
+/**
+ * m120()
+ *		.pipe(new Pattern([
+ *			'.x.x.x.xx.x...x.'
+ *		]))
+ *		.pipe(new Chord([
+ *			['E4', 'F#4', 'G#4', 'A4'],
+ *			['E4', 'F#4', 'G#4', 'A4']
+ *		])
+ *		.pipe(yamaha())
+ */
 class Chord extends Transform {
 	constructor(chords, octaveOffset = 0) {
 		super({objectMode:true});

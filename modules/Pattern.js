@@ -4,14 +4,45 @@ const { Transform } = require('stream'),
 	isArray = require('@giantleap/utils/underdash/isArray')
 ;
 
+/**
+ * Pattern - Create note on/off patterns
+ *
+ * Example:
+ *
+ * m120()
+ *    .pipe(new Pattern([
+ *       '..x...x...x...x.',
+ *    ], {
+ *           8: 'x.x.x.x.x.x.xxx.',
+ *          16: '..x...xxxxxxx.x.',
+ *          32: 'xxx.x.x.xxxx..x.'
+ *    }))
+ *    .pipe(new Note([
+ *       Electribe.S2
+ *    ]))
+ *    .pipe(electribe())
+ *
+ */
 class Pattern extends Transform {
 
-	constructor(patStr, variations=false) {
+  /**
+   *
+   * @param patStrOrFn {string|array} The beat
+   * @param variations {object} An object containing variations on the beat (see example)
+   */
+	constructor(patStrOrFn, variations=false) {
 		super({objectMode:true});
 		this.prevStepType = null;
+		this.mode = typeof patStrOrFn;
+
+		if(this.mode === 'function') {
+			this.pattern = patStrOrFn;
+			return;
+		}
+		this.mode = 'string';
 
 		// join the array of strings patterns.
-		patStr = patStr.join('');
+		patStrOrFn = patStrOrFn.join('');
 
 		// A hit is a key press with a duration (eventually)
 		this.hit = null;
@@ -31,27 +62,31 @@ class Pattern extends Transform {
 		// 	}))
 		// ...
 		//
-		if(variations) {
+		const variationsIsEmpty = Object.keys(variations).length === 0;
+		if(variations && !variationsIsEmpty) {
 			const enlargedPatStr = [];
 			const variationIndexes = Object.keys(variations);
 			const longestIndex = Math.max(...variationIndexes);
 			for(let i=1; i <= longestIndex; i++) {
-				enlargedPatStr[i-1] = patStr;
+				enlargedPatStr[i-1] = patStrOrFn;
 				for(const variationIndex of variationIndexes) {
 					if(i % variationIndex === 0) {
 						enlargedPatStr[i-1] = variations[variationIndex]
 					}
 				}
 			}
-			patStr = [].concat(...enlargedPatStr).join('');
+			patStrOrFn = [].concat(...enlargedPatStr).join('');
 		}
 
-		this.pattern = RingBuffer(patStr.split(''));
+		this.pattern = RingBuffer(patStrOrFn.split(''));
 	}
+
+	isFnMode() {return this.mode === 'function'; }
+	isRbMode() {return this.mode === 'string'; }
 
 	_transform(step, encoding, done) {
 
-		const stepType = this.pattern.next().value;
+		const stepType = this.isRbMode() ? this.pattern.next().value : this.pattern();
 		switch(stepType) {
 			case 'x':
 				if(this.prevStepType === 'x' || this.prevStepType === '=') {

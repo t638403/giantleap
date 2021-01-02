@@ -1,8 +1,16 @@
 const { Transform } = require('stream');
 const MidiOut = require('@giantleap/MidiOut');
 
+/**
+ * Instrument
+ */
 class Instrument extends Transform {
 
+  /**
+   *
+   * @param reDeviceName
+   * @param midiChannel
+   */
 	constructor(reDeviceName, midiChannel) {
 		super({objectMode:true});
 
