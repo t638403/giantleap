@@ -52,21 +52,23 @@ class MidiMsgr extends Transform {
 				});
 
 				break;
-      case 'start':
-        this.pq.add({
-          device: msg.device,
-          t:msg.tEnd,
-          msg:start()
-        });
-        break;
 
-      case 'stop':
-        this.pq.add({
-          device: msg.device,
-          t:msg.tEnd,
-          msg:stop()
-        });
-        break;
+			// These start/stop messages seem to fuck up my Arp. They might be useful for syncing the drumatix though.
+      // case 'start':
+      //   this.pq.add({
+      //     device: msg.device,
+      //     t:msg.t,
+      //     msg:start()
+      //   });
+      //   break;
+      //
+      // case 'stop':
+      //   this.pq.add({
+      //     device: msg.device,
+      //     t:msg.t,
+      //     msg:stop()
+      //   });
+      //   break;
 
 			case 'clock':
 				this.push({
@@ -75,6 +77,7 @@ class MidiMsgr extends Transform {
 					msg:clock()
 				});
 				break;
+
 			case 'nrpn':
 				const midiMsgs = nrpn(msg.channel, msg.nm, msg.nl, msg.value, msg.dl);
 				for(const midiMsg of midiMsgs) {
@@ -85,6 +88,7 @@ class MidiMsgr extends Transform {
 					});
 				}
 				break;
+
 			case 'ctrl':
 				this.push({
 					device: msg.device,
@@ -92,6 +96,7 @@ class MidiMsgr extends Transform {
 					msg:ctrl(msg.channel, msg.ctrl, msg.value)
 				});
 				break;
+
 			default:
 			// do stuff one day
 		}
