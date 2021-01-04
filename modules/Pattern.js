@@ -81,12 +81,12 @@ class Pattern extends Transform {
 		this.pattern = RingBuffer(patStrOrFn.split(''));
 	}
 
-	isFnMode() {return this.mode === 'function'; }
-	isRbMode() {return this.mode === 'string'; }
+	isFunctionMode() {return this.mode === 'function'; }
+	isRingBufferMode() {return this.mode === 'string'; }
 
 	_transform(step, encoding, done) {
 
-		const stepType = this.isRbMode() ? this.pattern.next().value : this.pattern();
+		const stepType = this.isRingBufferMode() ? this.pattern.next().value : this.pattern();
 		switch(stepType) {
 			case 'x':
 				if(this.prevStepType === 'x' || this.prevStepType === '=') {
@@ -100,7 +100,7 @@ class Pattern extends Transform {
 				break;
 			case '.':
 				if(this.prevStepType === '=' || this.prevStepType === 'x') {
-					this.hit.tEnd = step.t;
+					this.hit.tEnd = step.t - 3000000n;
 					this.push(Object.assign({}, this.hit));
 					this.hit = null;
 				}
