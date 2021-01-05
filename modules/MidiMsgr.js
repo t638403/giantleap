@@ -1,15 +1,6 @@
 const { Transform } = require('stream');
-const NaivePriorityQueue = require("@giantleap/utils/NaivePriorityQueue");
 
-const {
-	noteOn,
-	noteOff,
-  start,
-  stop,
-	clock,
-	ctrl,
-	nrpn
-} = require('@giantleap/utils/Msgr');
+const Msgr = require('@giantleap/utils/Msgr');
 
 /**
  * Reduce all messages into a minimal format that is necessary for being able to send the midi message to the right
@@ -19,86 +10,52 @@ class MidiMsgr extends Transform {
 
 	constructor() {
 		super({objectMode:true});
-		this.pq = new NaivePriorityQueue( (a, b) => a.t < b.t );
 	}
 
-	_transform(msg, _enc, next) {
+	_transform(step, _enc, next) {
 
-		/*
-		 * The `note` message is special one because it contains the start time and the end time of the note. This
-		 * message needs to be split into a note on and a note off message, since this is the way MIDI works. However,
-		 * the final stream handler, being `MidiOut`, counts on the messages delivered in sequence. We need to buffer
-		 * those note off messages and send them when the time is there, hence the while loop. The while loop constantly
-		 * checks if the received message is older than any of the messages on the buffer. If so, it sends those and
-		 * finally sends the actual message that was received.
-		 */
-		while(!this.pq.isEmpty() && this.pq.peek().t < msg.t) {
-			this.push(this.pq.poll());
-		}
+		let msg,
+			key,
+			value,
+			ctrl,
+			nm,
+			nl,
+			dl
+		;
+		const {device, channel, t} = step;
 
-		switch(msg.msg) {
-			case 'note':
-				this.push({
-					device: msg.device,
-					t:msg.t,
-					msg:noteOn(msg.channel, msg.key || 'C2', msg.value || 100)
-				});
-
-				// Adding this node off message to the prio queue so it can be sent when the time is there.
-				this.pq.add({
-					device: msg.device,
-					t:msg.tEnd,
-					msg:noteOff(msg.channel, msg.key || 'C2', msg.value || 100)
-				});
-
+		switch(step.msg) {
+			case 'noteOn':
+				({key, value} = step);
+				msg = Msgr.noteOn(channel, key || 'C2', value || 100);
+				this.push({ device, t, msg });
 				break;
 
-			// These start/stop messages seem to fuck up my Arp. They might be useful for syncing the drumatix though.
-      // case 'start':
-      //   this.pq.add({
-      //     device: msg.device,
-      //     t:msg.t,
-      //     msg:start()
-      //   });
-      //   break;
-      //
-      // case 'stop':
-      //   this.pq.add({
-      //     device: msg.device,
-      //     t:msg.t,
-      //     msg:stop()
-      //   });
-      //   break;
+			case 'noteOff':
+				({key, value} = step);
+				msg = Msgr.noteOff(channel, key || 'C2', value || 100);
+				this.push({ device, t, msg });
+				break;
 
 			case 'clock':
-				this.push({
-					device: msg.device,
-					t: msg.t,
-					msg:clock()
-				});
+				msg = Msgr.clock();
+				this.push({	device, t, msg });
 				break;
 
 			case 'nrpn':
-				const midiMsgs = nrpn(msg.channel, msg.nm, msg.nl, msg.value, msg.dl);
-				for(const midiMsg of midiMsgs) {
-					this.push({
-						device: msg.device,
-						t: msg.t,
-						msg:midiMsg
-					});
+				({nm, nl, dl, value} = step);
+				const midiMsgs = Msgr.nrpn(channel, nm, nl, value, dl);
+				for(msg of midiMsgs) {
+					this.push({ device, t, msg });
 				}
 				break;
 
 			case 'ctrl':
-				this.push({
-					device: msg.device,
-					t: msg.t,
-					msg:ctrl(msg.channel, msg.ctrl, msg.value)
-				});
+				({ctrl, value} = step);
+				msg = Msgr.ctrl(channel, ctrl, value);
+				this.push({ device, t, msg });
 				break;
 
-			default:
-			// do stuff one day
 		}
 		next();
 	}

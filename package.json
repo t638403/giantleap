@@ -2,7 +2,7 @@
 	"name": "giantleap",
 	"version": "1.0.0",
 	"dependencies": {
-		"midi": "0.9.5"
+		"midi": "^1.0.0"
 	},
 	"scripts": {
 		"postinstall": "ln -s ../modules ./node_modules/@giantleap"

@@ -22,7 +22,7 @@ const nextActiveStreamIndex = (msgs) => {
  *
  * One drawback of this implementation is that when a read stream might be slow, it will return false and the process
  * will crash because it is not able to determine the message with the lowest time stamp since `false` has not property
- * t. I suspect this will never occur though, since the write stream is definately slower.
+ * t. I suspect this will never occur though, since the write stream is definitely slower.
  */
 class Stitch extends Transform {
 	constructor(streams) {
