@@ -16,6 +16,7 @@ class MidiMsgr extends Transform {
 
 		let msg,
 			key,
+      velocity,
 			value,
 			ctrl,
 			nm,
@@ -26,14 +27,14 @@ class MidiMsgr extends Transform {
 
 		switch(step.msg) {
 			case 'noteOn':
-				({key, value} = step);
-				msg = Msgr.noteOn(channel, key || 'C2', value || 100);
+				({key, velocity} = step);
+				msg = Msgr.noteOn(channel, key || 'C2', velocity || 100);
 				this.push({ device, t, msg });
 				break;
 
 			case 'noteOff':
-				({key, value} = step);
-				msg = Msgr.noteOff(channel, key || 'C2', value || 100);
+				({key, velocity} = step);
+				msg = Msgr.noteOff(channel, key || 'C2', velocity || 100);
 				this.push({ device, t, msg });
 				break;
 

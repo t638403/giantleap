@@ -1,5 +1,5 @@
 const { Transform } = require('stream'),
-  StepSequencer = require('@giantleap/util/StepSequencer'),
+  StepSequencer = require('@giantleap/utils/StepSequencer'),
   Electribe    = require('@giantleap/Electribe')
 ;
 
@@ -18,18 +18,17 @@ class MultiPattern extends Transform {
   _transform(step, encoding, done) {
 
     // Walk over all piano keys of the multi pattern (y direction)
-    const pianoKeys = Object.keys(this.tracks);
-    for(const pianoKey of pianoKeys) {
+    for(const stepSequencer of this.tracks) {
 
       // Walk over all key strikes (and silences) (x direction)
-      const stepSequencer = this.tracks[pianoKey];
-
       // The step sequencer returns an array of 0, 1 or 2 partial (midi)
       // messages.
       const msgs = stepSequencer.next(step.t);
 
       for(const msg of msgs) {
-        this.push(Object.assign(step, msg));
+        // Assign to new object or note key will be overwritten due to pointer of step. I mean use the {} in
+        // Object.assign.
+        this.push(Object.assign({}, step, msg));
       }
 
     }
