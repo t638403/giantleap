@@ -61,7 +61,7 @@ StepSequencer.parse = (pianoNoteGrid, pianoKeyMapping) => pianoNoteGrid
   .filter(track =>
     /^(.*?):([0-9a-fx=.])*$/.test(track) // Something like C#2 :x..x..x.x..x..x
     && !/^(.*?):([.])*$/.test(track)     // Skip empty tracks
-    && !/^\s*\/\//.test(track)              // Skip comment, e.g. //...
+    && !/^\s*\/\//.test(track)           // Skip comment, e.g. //...
   )
   .map(track => ({
     // Match anything before and after the colon.
