@@ -25,7 +25,7 @@ class MidiOut extends Writable {
 
 	play() {
 
-		const startTime = process.hrtime.bigint();
+		const startTime = process.hrtime.bigint() + 100000000n; // Add some time or first note will not play
 
 		return setInterval(() => {
 
@@ -49,8 +49,6 @@ class MidiOut extends Writable {
 
 	_write(msg, _enc, next) {
 
-		if(!this.i) this.i = this.play();
-
 		// Check if midi device was available, and if not make it available
 		if(!this.outs[msg.device] && msg.device in this.ports) {
 			this.outs[msg.device] = new midi.output();
@@ -60,6 +58,8 @@ class MidiOut extends Writable {
 				// console.log(`All notes of: ${msg.device}/${channel}`);
 				this.outs[msg.device].sendMessage(Msgr.allNotesOff(channel));
 			}
+
+		  if(!this.i) this.i = this.play();
 
 		}
 
