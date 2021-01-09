@@ -18,7 +18,10 @@ const StepSequencer = (key, aSequence) => {
     next(t) {
 
       const msgs = [];
-
+      if(step === 'r') {
+        velocity = Math.round(64 + ( (Math.random() * 127) / 2) );
+        step = 'x';
+      }
       if(/^[0-9a-f]$/i.test(step)) {
         velocity = parseInt(step, 16) * 0x8;
         step = 'x';
@@ -59,9 +62,9 @@ const StepSequencer = (key, aSequence) => {
 StepSequencer.parse = (pianoNoteGrid, pianoKeyMapping) => pianoNoteGrid
   .split('\n')
   .filter(track =>
-    /^(.*?):([0-9a-fx=.])*$/.test(track) // Something like C#2 :x..x..x.x..x..x
-    && !/^(.*?):([.])*$/.test(track)     // Skip empty tracks
-    && !/^\s*\/\//.test(track)           // Skip comment, e.g. //...
+    /^(.*?):\s*([0-9a-frx=.])*$/.test(track) // Something like C#2 :x..x..x.x..x..x
+    && !/^(.*?):([.])*$/.test(track)      // Skip empty tracks
+    && !/^\s*\/\//.test(track)            // Skip comment, e.g. //...
   )
   .map(track => ({
     // Match anything before and after the colon.
