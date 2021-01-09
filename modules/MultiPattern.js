@@ -13,6 +13,9 @@ class MultiPattern extends Transform {
   constructor(pianoNoteGrid, pianoKeyMapping) {
     super({objectMode:true});
     this.tracks = StepSequencer.parse(pianoNoteGrid, pianoKeyMapping);
+    if(this.tracks.length === 0) {
+      throw new Error('Not tracks for: ' + pianoNoteGrid)
+    }
   }
 
   _transform(step, encoding, done) {
